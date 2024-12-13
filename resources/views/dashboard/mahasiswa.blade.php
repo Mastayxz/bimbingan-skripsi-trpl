@@ -1,25 +1,16 @@
-<!-- resources/views/dashboard/mahasiswa.blade.php -->
+@extends('layouts.app')
 
-<x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Dashboard Mahasiswa') }}
-        </h2>
-    </x-slot>
+@section('content')
+    <h1 class="text-3xl font-bold mb-4">Dashboard Mahasiswa</h1>
+    <p>Selamat datang, Mahasiswa. Anda dapat mengakses informasi skripsi Anda di sini.</p>
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900">
-                    {{ __("Welcome, Mahasiswa!") }}
-                </div>
-
-                <div class="mt-6">
-                    <a href="{{ route('skripsi.create') }}" class="text-blue-500 hover:text-blue-700">
-                        Daftarkan Skripsi
-                    </a>
-                </div>
-            </div>
-        </div>
+    <div class="mt-6">
+        <h2 class="font-bold text-xl">Skripsi Saya</h2>
+        <p class="mt-4">Jika Anda sudah mengajukan skripsi, Anda dapat melanjutkan di sini.</p>
+        <ul class="mt-4">
+            {{-- @foreach ($skripsi as $skripsiItem)
+                <li>{{ $skripsiItem->judul }} - {{ $skripsiItem->status }}</li>
+            @endforeach --}}
+        </ul>
     </div>
-</x-app-layout>
+@endsection

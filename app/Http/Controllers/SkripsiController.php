@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Auth;
 class SkripsiController extends Controller
 {
     //
-    public function create()
+    public function index()
     {
         $dosens = Dosen::all();
         return view('mahasiswa.skripsi.create', compact('dosens'));
@@ -38,26 +38,5 @@ class SkripsiController extends Controller
         ]);
 
         return redirect()->route('skripsi.create')->with('success', 'Judul skripsi berhasil diajukan.');
-    }
-
-    public function index()
-    {
-        $skripsi = Skripsi::with('mahasiswa')->get();
-
-        return view('admin.skripsi.index', compact('skripsi'));
-    }
-
-    public function approve(Skripsi $skripsi)
-    {
-        $skripsi->update(['status' => 'approved']);
-
-        return back()->with('success', 'Judul skripsi disetujui.');
-    }
-
-    public function reject(Skripsi $skripsi)
-    {
-        $skripsi->update(['status' => 'rejected']);
-
-        return back()->with('success', 'Judul skripsi ditolak.');
     }
 }

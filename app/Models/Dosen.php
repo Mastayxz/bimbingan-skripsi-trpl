@@ -24,12 +24,13 @@ class Dosen extends Model
     {
         return $this->belongsTo(User::class);
     }
-    public function skripsiSebagaiPembimbing1()
+    // Relasi dengan Skripsi
+    public function skripsiPembimbing1()
     {
         return $this->hasMany(Skripsi::class, 'dosen_pembimbing_1');
     }
 
-    public function skripsiSebagaiPembimbing2()
+    public function skripsiPembimbing2()
     {
         return $this->hasMany(Skripsi::class, 'dosen_pembimbing_2');
     }
