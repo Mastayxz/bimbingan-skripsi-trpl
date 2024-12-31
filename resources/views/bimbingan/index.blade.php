@@ -1,30 +1,37 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container">
-    <h1>Daftar Bimbingan Skripsi</h1>
+<div class="container mx-auto px-4">
+    <h1 class="text-3xl font-semibold text-gray-800 mb-6">Daftar Bimbingan</h1>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>No</th>
-                <th>Nama Skripsi</th>
-                <th>Status Bimbingan</th>
-                <th>Aksi</th>
-            </tr>
-        </thead>
-        <tbody>
+    @if ($bimbingans->isEmpty())
+        <div class="text-center text-gray-500">
+            <p>Tidak ada bimbingan.</p>
+        </div>
+    @else
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             @foreach ($bimbingans as $bimbingan)
-                <tr>
-                    <td>{{ $loop->iteration }}</td>
-                    <td>{{ $bimbingan->skripsi->judul_skripsi }}</td>
-                    <td>{{ ucfirst($bimbingan->status_bimbingan) }}</td>
-                    <td>
-                        <a href="{{ route('bimbingan.show', $bimbingan->id_bimbingan) }}" class="btn btn-primary">Lihat Bimbingan</a>
-                    </td>
-                </tr>
+                <div class="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition duration-300">
+                    <a href="{{ route('bimbingans.show', ['bimbingan_id' => $bimbingan->id_bimbingan]) }}" class="block text-gray-800 hover:text-blue-800 font-semibold text-lg mb-2">
+                        {{ $bimbingan->skripsi->judul_skripsi }}
+                    </a>
+                    @role('dosen')
+                    <p class="text-gray-600 text-sm">Nama Mahasiswa: {{ $bimbingan->mahasiswaBimbingan->nama }}</p>
+                    <p class="text-gray-600 text-sm">Email: {{ $bimbingan->mahasiswaBimbingan->email }}</p>
+
+                    @endrole
+                    @role('mahasiswa')
+                    <p class="text-gray-600 text-sm">Nama Pembimbing 1: {{ $bimbingan->dosenPembimbing1->nama }}</p>
+                    <p class="text-gray-600 text-sm">Email Pembimbing 1: {{ $bimbingan->dosenPembimbing1->email }}</p>
+                    <p class="text-gray-600 text-sm">Nama Pembimbing 2: {{ $bimbingan->dosenPembimbing2->nama }}</p>
+                    <p class="text-gray-600 text-sm">Email Pembimbing 2: {{ $bimbingan->dosenPembimbing2->email }}</p>
+                    @endrole
+                    <div class="mt-4">
+                        <span class="text-xs text-gray-500">Bimbingan ini sedang berlangsung</span>
+                    </div>
+                </div>
             @endforeach
-        </tbody>
-    </table>
+        </div>
+    @endif
 </div>
 @endsection

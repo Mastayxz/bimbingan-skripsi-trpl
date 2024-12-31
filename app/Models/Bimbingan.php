@@ -3,52 +3,49 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Bimbingan extends Model
 {
-    //
-    use HasFactory;
+    protected $table = 'bimbingans'; // Nama tabel
+    protected $primaryKey = 'id_bimbingan';
 
     protected $fillable = [
-        'id_skripsi',
+        'skripsi_id',
+        'dosen_pembimbing_1',
+        'dosen_pembimbing_2',
+        'mahasiswa_id',
         'tanggal_bimbingan',
-        'catatan',
         'status_bimbingan',
-        'file_lampiran',
-        'link_file',
-        'tanggapan_dosen',
-        'task_name',
-        'status_task'
     ];
 
-    // Relasi ke Skripsi (Asumsi ada model Skripsi)
-    public function skripsi()
+    // Relasi ke Skripsi
+    public function skripsi(): BelongsTo
     {
-        return $this->belongsTo(Skripsi::class, 'id_skripsi');
+        return $this->belongsTo(Skripsi::class, 'skripsi_id');
     }
 
-    /**
-     * Cek apakah semua task sudah selesai, jika sudah, update status bimbingan.
-     */
-    public function updateStatusBimbingan()
+    // Relasi ke Dosen (Pembimbing 1)
+    public function dosenPembimbing1(): BelongsTo
     {
-        // Menghitung jumlah task dengan status 'selesai'
-        $completedTasks = $this->where('id_skripsi', $this->id_skripsi)
-            ->where('status_task', 'selesai')
-            ->count();
+        return $this->belongsTo(Dosen::class, 'dosen_pembimbing_1');
+    }
 
-        // Cek apakah semua task telah selesai
-        $totalTasks = $this->where('id_skripsi', $this->id_skripsi)->count();
+    // Relasi ke Dosen (Pembimbing 2)
+    public function dosenPembimbing2(): BelongsTo
+    {
+        return $this->belongsTo(Dosen::class, 'dosen_pembimbing_2');
+    }
 
-        if ($completedTasks == $totalTasks) {
-            // Jika semua task selesai, set status bimbingan ke 'selesai'
-            $this->status_bimbingan = 'selesai';
-            $this->save();
-        } else {
-            // Jika ada task yang belum selesai, status tetap 'sedang berjalan'
-            $this->status_bimbingan = 'sedang berjalan';
-            $this->save();
-        }
+    public function mahasiswaBimbingan()
+    {
+        return $this->belongsTo(Mahasiswa::class, 'mahasiswa_id');
+    }
+
+    // Relasi ke Task (satu bimbingan memiliki banyak tugas)
+    public function tasks()
+    {
+        return $this->hasMany(Task::class, 'bimbingan_id');
     }
 }

@@ -13,7 +13,7 @@
 
     <!-- Tabel Pengajuan Skripsi -->
     <table class="min-w-full bg-white border border-gray-300 shadow-lg rounded-lg">
-        <thead class="bg-blue-600 text-white">
+        <thead class="bg-gray-800 text-white">
             <tr>
                 <th class="px-4 py-3 text-left">No.</th>
                 <th class="px-4 py-3 text-left">Judul Skripsi</th>

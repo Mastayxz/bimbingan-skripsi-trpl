@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rules;
 use Illuminate\View\View;
+use App\Models\Mahasiswa;
+use App\Models\Dosen;
 
 class NewPasswordController extends Controller
 {
@@ -46,6 +48,20 @@ class NewPasswordController extends Controller
                     'remember_token' => Str::random(60),
                 ])->save();
 
+                // Update password in mahasiswa or dosen table if the user is found there
+                if ($user->mahasiswa) {
+                    // Update password in Mahasiswa table
+                    $user->mahasiswa->password = Hash::make($request->password);
+                    $user->mahasiswa->save();
+                }
+
+                if ($user->dosen) {
+                    // Update password in Dosen table
+                    $user->dosen->password = Hash::make($request->password);
+                    $user->dosen->save();
+                }
+
+                // Fire the password reset event
                 event(new PasswordReset($user));
             }
         );
@@ -54,8 +70,8 @@ class NewPasswordController extends Controller
         // the application's home authenticated view. If there is an error we can
         // redirect them back to where they came from with their error message.
         return $status == Password::PASSWORD_RESET
-                    ? redirect()->route('login')->with('status', __($status))
-                    : back()->withInput($request->only('email'))
-                        ->withErrors(['email' => __($status)]);
+            ? redirect()->route('login')->with('status', __($status))
+            : back()->withInput($request->only('email'))
+            ->withErrors(['email' => __($status)]);
     }
 }

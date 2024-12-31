@@ -35,7 +35,7 @@ class RegisteredUserController extends Controller
         // Validasi data input
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
+            'email' => 'required|string|email|max:255|unique:users,email',
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
             'role' => 'required|in:mahasiswa,dosen',
             'identifier' => 'required|unique:mahasiswas,nim|unique:dosens,nip',
@@ -43,7 +43,10 @@ class RegisteredUserController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return redirect()->back()->withErrors($validator)->withInput();
+            return redirect()
+                ->back()
+                ->withErrors($validator)
+                ->withInput();
         }
 
         // Membuat user
@@ -56,7 +59,7 @@ class RegisteredUserController extends Controller
         // Tambahkan role pada user
         $user->assignRole($request->role);
 
-        // Simpan data berdasarkan role
+        // Simpan data tambahan berdasarkan role
         if ($request->role === 'mahasiswa') {
             Mahasiswa::create([
                 'user_id' => $user->id,
@@ -70,24 +73,16 @@ class RegisteredUserController extends Controller
                 'nip' => $request->identifier,
                 'nama' => $request->name,
                 'jurusan' => $request->jurusan,
+                'password' => Hash::make($request->password), // Enkripsi password
             ]);
         }
 
+        // Trigger event untuk registrasi (opsional)
+        event(new Registered($user));
 
-
-
-        // Login otomatis setelah registrasi
-        Auth::login($user);
-
-        // Redirect ke dashboard berdasarkan role
-        if ($user->hasRole('mahasiswa')) {
-            return redirect()->route('dashboard.mahasiswa');
-        }
-
-        if ($user->hasRole('dosen')) {
-            return redirect()->route('dashboard.dosen');
-        }
-
-        return redirect()->route('dashboard');
+        // Redirect ke halaman login dengan pesan sukses
+        return redirect()
+            ->route('login')
+            ->with('success', 'Registrasi berhasil! Silakan login menggunakan akun Anda.');
     }
 }

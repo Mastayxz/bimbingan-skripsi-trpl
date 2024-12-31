@@ -1,72 +1,79 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container">
-    <h1>Detail Bimbingan Skripsi</h1>
+<div class="bg-gray-800 text-white p-6 rounded-lg shadow-md">
+    <h1 class="text-2xl font-bold mb-6">Detail Bimbingan</h1>
 
-    <div class="card">
-        <div class="card-header">
-            <h3>Task Bimbingan: {{ $bimbingan->task_name }}</h3>
+    <!-- Progress Bar -->
+    <div class="mb-6">
+        <div class="w-full bg-gray-700 rounded-full h-4 relative">
+            <div class="bg-blue-600 h-4 rounded-full" style="width: {{ $progress }}%;"></div>
+            <span class="absolute inset-0 flex items-center justify-center text-sm font-semibold text-gray-100">{{ number_format($progress, 2) }}%</span>
         </div>
-        <div class="card-body">
-            <p><strong>Status Task:</strong> {{ ucfirst($bimbingan->status_task) }}</p>
-
-            @if($bimbingan->status_task == 'selesai')
-                <p><strong>Task ini sudah selesai.</strong></p>
-            @elseif($bimbingan->status_task == 'sedang_dikerjakan')
-                <p><strong>Task sedang dikerjakan.</strong></p>
-            @else
-                <form action="{{ route('bimbingan.uploadLink', $bimbingan->id_bimbingan) }}" method="POST">
-                    @csrf
-                    <div class="form-group">
-                        <label for="link_file">Link File</label>
-                        <input type="url" name="link_file" class="form-control" value="{{ old('link_file') }}" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="task_name">Nama Task</label>
-                        <input type="text" name="task_name" class="form-control" value="{{ $bimbingan->task_name }}" required>
-                    </div>
-                    <button type="submit" class="btn btn-success">Upload Link File</button>
-                </form>
-            @endif
-        </div>
+        <p class="text-sm text-gray-400 mt-2">Progress: {{ number_format($progress, 2) }}%</p>
     </div>
 
-    <hr>
+    <!-- Daftar Task -->
+    <h2 class="text-xl font-semibold mb-4">Daftar Task</h2>
+    @if ($tasks->isEmpty())
+        <p class="text-gray-400">Belum ada tugas yang ditambahkan.</p>
+    @else
+        <ul class="space-y-4">
+            @foreach ($tasks as $task)
+            <li class="border p-4 rounded-lg shadow-sm bg-gray-700">
+                <div class="flex justify-between items-center">
+                    <a href="{{ route('tasks.show', $task->id_task) }}" class="font-semibold text-blue-400 hover:underline">
+                        {{ $task->nama_tugas }}
+                    </a>
+                    <span class="px-3 py-1 rounded-full text-sm text-white 
+                        {{ $task->status == 'disetujui' ? 'bg-green-500' : ($task->status == 'sedang direvisi' ? 'bg-yellow-500' : 'bg-red-500') }}">
+                        {{ ucfirst($task->status) }}
+                    </span>
+                </div>
+                <p class="text-sm text-gray-300 mt-2">{{ $task->deskripsi }}</p>
 
-    <h3>Tanggapan Dosen</h3>
-    <div class="card">
-        <div class="card-body">
-            @if($bimbingan->tanggapan_dosen)
-                <p><strong>{{ $bimbingan->tanggapan_dosen }}</strong></p>
-            @else
-                <p><i>Dosen belum memberikan tanggapan.</i></p>
-            @endif
-        </div>
-    </div>
+                <!-- File dan Komentar -->
+                <div class="mt-3">
+                    @if ($task->file_mahasiswa)
+                        <p class="text-sm">File Tugas: 
+                            <a href="{{ asset('storage/' . $task->file_mahasiswa) }}" target="_blank" class="text-blue-400 hover:text-blue-600">Lihat</a>
+                        </p>
+                    @endif
 
-    <hr>
+                    @if ($task->komentar_dosen)
+                        <p class="text-sm mt-2">Komentar Dosen: <span class="italic text-gray-300">{{ $task->komentar_dosen }}</span></p>
+                    @endif
 
-    <h3>Update Status Bimbingan</h3>
-    <form action="{{ route('bimbingan.update', $bimbingan->id_bimbingan) }}" method="POST">
+                    @if ($task->file_feedback_dosen)
+                        <p class="text-sm mt-2">Feedback Dosen: 
+                            <a href="{{ asset('storage/' . $task->file_feedback_dosen) }}" target="_blank" class="text-blue-400 hover:text-blue-600">Lihat</a>
+                        </p>
+                    @endif
+                </div>
+            </li>
+            @endforeach
+        </ul>
+    @endif
+
+    <!-- Form Tambah Task untuk Mahasiswa -->
+    @role('mahasiswa')
+    <h2 class="text-xl font-semibold mt-10">Tambah Task Baru</h2>
+    <form action="{{ route('tasks.store', $bimbingan->id_bimbingan) }}" method="POST" enctype="multipart/form-data" class="mt-4">
         @csrf
-        @method('POST')
-        <div class="form-group">
-            <label for="status_bimbingan">Status Bimbingan</label>
-            <select name="status_bimbingan" class="form-control">
-                <option value="sedang berjalan" {{ $bimbingan->status_bimbingan == 'sedang berjalan' ? 'selected' : '' }}>Sedang Berjalan</option>
-                <option value="selesai" {{ $bimbingan->status_bimbingan == 'selesai' ? 'selected' : '' }}>Selesai</option>
-            </select>
+        <div class="mb-4">
+            <label for="nama_tugas" class="block text-sm font-medium">Nama Tugas</label>
+            <input type="text" id="nama_tugas" name="nama_tugas" class="w-full border-gray-500 bg-gray-700 rounded-md shadow-sm text-gray-300" required>
         </div>
-        <div class="form-group">
-            <label for="status_task">Status Task</label>
-            <select name="status_task" class="form-control">
-                <option value="belum_dikerjakan" {{ $bimbingan->status_task == 'belum_dikerjakan' ? 'selected' : '' }}>Belum Dikerjakan</option>
-                <option value="sedang_dikerjakan" {{ $bimbingan->status_task == 'sedang_dikerjakan' ? 'selected' : '' }}>Sedang Dikerjakan</option>
-                <option value="selesai" {{ $bimbingan->status_task == 'selesai' ? 'selected' : '' }}>Selesai</option>
-            </select>
+        <div class="mb-4">
+            <label for="deskripsi" class="block text-sm font-medium">Deskripsi</label>
+            <textarea id="deskripsi" name="deskripsi" class="w-full border-gray-500 bg-gray-700 rounded-md shadow-sm text-gray-300" required></textarea>
         </div>
-        <button type="submit" class="btn btn-warning">Update Status</button>
+        <div class="mb-4">
+            <label for="file_mahasiswa" class="block text-sm font-medium">Upload File</label>
+            <input type="file" id="file_mahasiswa" name="file_mahasiswa" class="w-full border-gray-500 bg-gray-700 rounded-md shadow-sm text-gray-300">
+        </div>
+        <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded-md shadow hover:bg-green-800">Tambah Task</button>
     </form>
+    @endrole
 </div>
 @endsection

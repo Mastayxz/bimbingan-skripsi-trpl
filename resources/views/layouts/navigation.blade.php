@@ -1,4 +1,4 @@
-<nav class="bg-blue-700 text-white shadow-lg sticky top-0 z-50">
+<nav class="bg-gray-800 text-white shadow-lg sticky top-0 ">
     <div class="flex items-center justify-between p-4">
         <!-- Logo dan Judul Sistem -->
         <div class="flex items-center space-x-2">

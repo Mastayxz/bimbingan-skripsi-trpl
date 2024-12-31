@@ -2,87 +2,97 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Bimbingan;
+use App\Models\Task;
 use App\Models\Skripsi;
+use App\Models\Bimbingan;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class BimbinganController extends Controller
 {
-    // Menampilkan halaman untuk menambahkan bimbingan
-    /**
-     * Menampilkan daftar bimbingan untuk mahasiswa berdasarkan id_skripsi.
-     */
-    public function index($id_skripsi)
+    // Tampilkan daftar sesi bimbingan
+    public function index()
     {
-        // Mendapatkan semua bimbingan berdasarkan skripsi
-        $bimbingans = Bimbingan::where('id_skripsi', $id_skripsi)->get();
+        $user = Auth::user();
+
+        if ($user->mahasiswa) { // Jika user adalah mahasiswa
+            $bimbingans = Bimbingan::where('mahasiswa_id', $user->mahasiswa->id)
+                ->with(['skripsi', 'dosenPembimbing1', 'dosenPembimbing2'])
+                ->get();
+        } elseif ($user->dosen) { // Jika user adalah dosen
+            $bimbingans = Bimbingan::with(['skripsi', 'mahasiswaBimbingan'])
+                ->where('dosen_pembimbing_1', $user->dosen->id)
+                ->orWhere('dosen_pembimbing_2', $user->dosen->id)
+                ->get();
+        } else {
+            abort(403, 'Unauthorized access.');
+        }
 
         return view('bimbingan.index', compact('bimbingans'));
     }
 
-    /**
-     * Menampilkan form untuk mengupdate status bimbingan atau task.
-     */
-    public function show($id_bimbingan)
+    // Tampilkan form tambah sesi bimbingan
+    public function create()
     {
-        // Mendapatkan bimbingan berdasarkan ID
-        $bimbingan = Bimbingan::findOrFail($id_bimbingan);
-
-        return view('bimbingan.show', compact('bimbingan'));
+        return view('bimbingans.create');
     }
 
-    /**
-     * Mengupdate status bimbingan atau task.
-     */
-    public function update(Request $request, $id_bimbingan)
+    // // Simpan sesi bimbingan baru
+    // public function store(Request $request)
+    // {
+    //     $request->validate([
+    //         'skripsi_id' => 'required',
+    //         'dosen_id' => 'required',
+    //         'mahasiswa_id' => 'required',
+    //         'tanggal_bimbingan' => 'required|date',
+    //     ]);
+
+    //     Bimbingan::create($request->all());
+
+    //     return redirect()->route('bimbingans.index')->with('success', 'Sesi bimbingan berhasil ditambahkan.');
+    // }
+
+    public function show($bimbingan_id)
     {
-        // Validasi input
-        $request->validate([
-            'status_bimbingan' => 'required|in:sedang berjalan,selesai', // Status bimbingan
-            'status_task' => 'required|in:belum_dikerjakan,sedang_dikerjakan,selesai', // Status task
-        ]);
+        $user = Auth::user();
+        $tasks = Task::where('bimbingan_id', $bimbingan_id)->get();
 
-        // Menemukan bimbingan berdasarkan ID
-        $bimbingan = Bimbingan::findOrFail($id_bimbingan);
+        // Query bimbingan dengan relasi yang diperlukan
+        $bimbingan = Bimbingan::with(['tasks', 'skripsi', 'mahasiswaBimbingan', 'dosenPembimbing1', 'dosenPembimbing2'])
+            ->findOrFail($bimbingan_id);
 
-        // Mengupdate status bimbingan dan status task
-        $bimbingan->update([
-            'status_bimbingan' => $request->status_bimbingan, // Mengupdate status bimbingan
-            'status_task' => $request->status_task, // Mengupdate status task
-        ]);
+        // Validasi akses untuk mahasiswa
+        if ($user->mahasiswa && $bimbingan->mahasiswa_id === $user->mahasiswa->id) {
+            $tasks = $bimbingan->tasks;
+        }
+        // Validasi akses untuk dosen
+        elseif ($user->dosen && ($bimbingan->dosen_pembimbing_1 === $user->dosen->id || $bimbingan->dosen_pembimbing_2 === $user->dosen->id)) {
+            $tasks = $bimbingan->tasks;
+        } else {
+            // Jika bukan mahasiswa atau dosen terkait, tolak akses
+            abort(403, 'Unauthorized access.');
+        }
 
-        // Memperbarui status bimbingan berdasarkan status task
-        $bimbingan->updateStatusBimbingan();
+        // Hitung progress berdasarkan task yang selesai
+        $completedTasks = $tasks->where('status', 'disetujui')->count();
+        $totalTasks = $tasks->count();
+        $progress = $totalTasks > 0 ? ($completedTasks / $totalTasks) * 100 : 0;
 
-        return redirect()->route('bimbingan.index', ['id_skripsi' => $bimbingan->id_skripsi])
-            ->with('success', 'Status bimbingan dan task berhasil diperbarui');
+        return view('bimbingan.show', compact('bimbingan', 'tasks', 'progress'));
     }
 
-    /**
-     * Menangani upload link file dan tugas yang sedang dikerjakan
-     */
-    public function uploadLink(Request $request, $id_bimbingan)
+    public function indexForDosen()
     {
-        // Validasi input link file dan task name
-        $request->validate([
-            'link_file' => 'required|url', // Validasi link file
-            'task_name' => 'required|string', // Nama task/bab skripsi
-        ]);
+        $dosenId = Auth::user()->dosen;
+        // Query untuk memuat bimbingan yang terkait dengan dosen
+        $bimbingans = Bimbingan::with(['skripsi', 'mahasiswa'])
+            ->where('dosen_pembimbing_1', $dosenId->id)
+            ->orWhere('dosen_pembimbing_2', $dosenId->id)
+            ->get();
 
-        // Menemukan bimbingan berdasarkan ID
-        $bimbingan = Bimbingan::findOrFail($id_bimbingan);
+        // Debugging: Periksa apakah query mengembalikan data
+        // dd($bimbingans);
 
-        // Mengupdate link file, task name, dan status task
-        $bimbingan->update([
-            'link_file' => $request->link_file, // Link file yang di-upload mahasiswa
-            'task_name' => $request->task_name, // Nama task yang dikerjakan
-            'status_task' => 'sedang_dikerjakan', // Mengupdate status task menjadi sedang dikerjakan
-        ]);
-
-        // Memperbarui status bimbingan berdasarkan status task
-        $bimbingan->updateStatusBimbingan();
-
-        return redirect()->route('bimbingan.show', ['id_bimbingan' => $bimbingan->id_bimbingan])
-            ->with('success', 'Link file dan task berhasil di-upload');
+        return view('bimbingan.index', compact('bimbingans'));
     }
 }

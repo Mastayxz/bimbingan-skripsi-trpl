@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\Dosen;
+use App\Models\Mahasiswa;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Password;
@@ -29,16 +31,26 @@ class PasswordResetLinkController extends Controller
             'email' => ['required', 'email'],
         ]);
 
-        // We will send the password reset link to this user. Once we have attempted
-        // to send the link, we will examine the response then see the message we
-        // need to show to the user. Finally, we'll send out a proper response.
+        // Cari mahasiswa berdasarkan email
+        $mahasiswa = Mahasiswa::where('email', $request->email)->first();
+        // Cari dosen berdasarkan email
+        $dosen = Dosen::where('email', $request->email)->first();
+
+        // Jika ditemukan mahasiswa atau dosen, kirimkan link reset password
+        if ($mahasiswa) {
+            // Anda bisa menambahkan logika di sini jika diperlukan
+        } elseif ($dosen) {
+            // Anda bisa menambahkan logika di sini jika diperlukan
+        }
+
+        // Kirimkan link reset password
         $status = Password::sendResetLink(
             $request->only('email')
         );
 
         return $status == Password::RESET_LINK_SENT
-                    ? back()->with('status', __($status))
-                    : back()->withInput($request->only('email'))
-                        ->withErrors(['email' => __($status)]);
+            ? back()->with('status', __($status))
+            : back()->withInput($request->only('email'))
+            ->withErrors(['email' => __($status)]);
     }
 }

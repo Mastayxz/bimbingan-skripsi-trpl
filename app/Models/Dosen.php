@@ -17,7 +17,9 @@ class Dosen extends Model
         'nama',
         'nip',
         'user_id',
-        'jurusan'
+        'jurusan',
+        'password',
+        'email',
     ];
     //
     public function user()

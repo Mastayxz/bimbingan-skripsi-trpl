@@ -13,13 +13,13 @@
 
     <!-- Tabel Daftar Mahasiswa -->
     <table class="min-w-full bg-white border border-gray-300 shadow-lg rounded-lg">
-        <thead class="bg-blue-600 text-white">
+        <thead class="bg-gray-800 text-white">
             <tr>
                 <th class="px-4 py-3 text-left">No.</th>
                 <th class="px-4 py-3 text-left">Nama</th>
                 <th class="px-4 py-3 text-left">NIM</th>
                 <th class="px-4 py-3 text-left">Jurusan</th>
-                {{-- <th class="px-4 py-3 text-left">Email</th> --}}
+                <th class="px-4 py-3 text-left">Email</th>
                 <th class="px-4 py-3 text-center">Aksi</th>
             </tr>
         </thead>
@@ -30,7 +30,8 @@
                     <td class="px-4 py-3">{{ $mhs->nama }}</td>
                     <td class="px-4 py-3">{{ $mhs->nim }}</td>
                     <td class="px-4 py-3">{{ $mhs->jurusan }}</td>
-                    {{-- <td class="px-4 py-3">{{ $mhs->email }}</td> --}}
+                    <td class="px-4 py-3">{{ $mhs->email }}</td>
+                    
                     <td class="px-4 py-3 text-center space-x-2">
                         <!-- Edit Button -->
                         <a href="{{ route('admin.mahasiswa.edit', $mhs->id) }}" 

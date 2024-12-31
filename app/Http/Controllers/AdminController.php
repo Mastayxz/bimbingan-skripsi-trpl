@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Mahasiswa;
 use App\Models\Dosen;
 use App\Models\Skripsi;
+use App\Models\Bimbingan;
+use App\Models\Mahasiswa;
 use Illuminate\Support\Facades\DB;
 
 class AdminController extends Controller
@@ -35,7 +36,7 @@ class AdminController extends Controller
     {
 
         // Mengambil data mahasiswa dengan pagination, 10 mahasiswa per halaman
-        $mahasiswa = Mahasiswa::paginate(10);
+        $mahasiswa = Mahasiswa::paginate(25);
 
         return view('admin.mahasiswa', compact('mahasiswa'));
     }
@@ -67,13 +68,31 @@ class AdminController extends Controller
 
     public function approveSkripsi($id_skripsi)
     {
+        // 1. Temukan skripsi berdasarkan ID
         $skripsi = Skripsi::findOrFail($id_skripsi);
+
+        // 2. Perbarui status skripsi menjadi 'disetujui'
         $skripsi->status = 'disetujui';
         $skripsi->save();
 
-        return redirect()->route('admin.skripsi.index')->with('success', 'Skripsi berhasil disetujui.');
-    }
+        // 3. Periksa apakah sesi bimbingan sudah ada
+        $existingBimbingan = Bimbingan::where('skripsi_id', $skripsi->id_skripsi)->first();
 
+        if (!$existingBimbingan) {
+            // 4. Buat sesi bimbingan otomatis dengan dua dosen pembimbing
+            Bimbingan::create([
+                'skripsi_id' => $skripsi->id_skripsi,
+                'dosen_pembimbing_1' => $skripsi->dosen_pembimbing_1, // Asumsi ada di tabel skripsis
+                'dosen_pembimbing_2' => $skripsi->dosen_pembimbing_2, // Asumsi ada di tabel skripsis
+                'mahasiswa_id' => $skripsi->mahasiswa,
+                'tanggal_bimbingan' => now(),
+                'status_bimbingan' => 'sedang berjalan',
+            ]);
+        }
+
+        // 5. Redirect dengan pesan sukses
+        return redirect()->route('admin.skripsi.index')->with('success', 'Skripsi berhasil disetujui dan sesi bimbingan telah dibuat.');
+    }
     public function rejectSkripsi($id_skripsi)
     {
         $skripsi = Skripsi::findOrFail($id_skripsi);

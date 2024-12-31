@@ -13,11 +13,25 @@ class SkripsiController extends Controller
     public function index()
     {
         $dosens = Dosen::all();
+
         return view('mahasiswa.skripsi.create', compact('dosens'));
     }
 
     public function store(Request $request)
     {
+        // Periksa apakah mahasiswa sudah memiliki skripsi yang disetujui
+        $mahasiswa = Auth::user()->mahasiswa;
+        $existingSkripsi = Skripsi::where('mahasiswa', $mahasiswa->id)
+            ->where('status', 'disetujui') // Cek hanya skripsi yang disetujui
+            ->first();
+
+
+        if ($existingSkripsi) {
+            return redirect()->route('skripsi.create')->with('error', 'Anda sudah memiliki skripsi yang disetujui dan tidak dapat mendaftar lagi.');
+        }
+        dd($existingSkripsi);
+
+        // Validasi input
         $request->validate([
             'judul_skripsi' => 'required|string|max:255',
             'tanggal_pengajuan' => 'required|date',
@@ -26,8 +40,7 @@ class SkripsiController extends Controller
             'abstrak' => 'nullable|string|max:1000',
         ]);
 
-
-        $mahasiswa = Auth::user()->mahasiswa;
+        // Buat data skripsi baru
         Skripsi::create([
             'mahasiswa' => $mahasiswa->id,
             'judul_skripsi' => $request->judul_skripsi,
@@ -35,6 +48,7 @@ class SkripsiController extends Controller
             'dosen_pembimbing_1' => $request->dosen_pembimbing_1,
             'dosen_pembimbing_2' => $request->dosen_pembimbing_2,
             'abstrak' => $request->abstrak,
+            // 'status' => 'pending', // Set status default sebagai pending
         ]);
 
         return redirect()->route('skripsi.create')->with('success', 'Judul skripsi berhasil diajukan.');

@@ -18,8 +18,12 @@ class Mahasiswa extends Model
         'nama',
         'nim',
         'user_id',
-        'jurusan'
+        'jurusan',
+        'email',
+        'password',
+        'prodi'
     ];
+    //
     //
     public function user()
     {

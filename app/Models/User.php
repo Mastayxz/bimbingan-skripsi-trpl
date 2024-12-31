@@ -54,6 +54,6 @@ class User extends Authenticatable
     // Relasi ke model Dosen
     public function dosen()
     {
-        return $this->hasOne(Dosen::class);
+        return $this->hasOne(Dosen::class, 'user_id', 'id');
     }
 }
