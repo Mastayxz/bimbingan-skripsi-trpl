@@ -3,7 +3,7 @@
 @section('content')
 
 <div class="container mx-auto px-4 py-6">
-    <h1 class="text-3xl font-semibold mb-6">Daftar Mahasiswa</h1>
+    <h1 class="text-3xl font-semibold mb-6">Daftar Skripsi</h1>
 
     <!-- Pesan sukses -->
     @if(session('success'))
@@ -14,7 +14,7 @@
 
     <!-- Tabel Daftar Mahasiswa -->
     <table class="min-w-full bg-white border border-gray-300 shadow-lg rounded-lg">
-        <thead class="bg-blue-600 text-white">
+        <thead class="bg-gray-800 text-white">
             <tr>
                 <th class="px-4 py-3 text-left">No.</th>
                 <th class="px-4 py-3 text-left">Judul Skripsi</th>

@@ -20,6 +20,8 @@ class Dosen extends Model
         'jurusan',
         'password',
         'email',
+        'prodi',
+        'nidn'
     ];
     //
     public function user()

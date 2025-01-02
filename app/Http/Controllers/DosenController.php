@@ -10,20 +10,11 @@ use Illuminate\Support\Facades\Auth;
 class DosenController extends Controller
 {
     //
-    public function dosenSkripsi(Dosen $dosen)
-    {
-        $skripsi = Skripsi::where(function ($query) use ($dosen) {
-            $query->where('dosen_pembimbing_1', $dosen->id)
-                ->orWhere('dosen_pembimbing_2', $dosen->id);
-        })->where('status', 'disetujui')->get();
-
-        return view('dosen.skripsi.index', compact('skripsi'));
-    }
     public function index()
     {
         // Ambil dosen yang sedang login
-        $dosen = Auth::user();
-        dd(Auth::user()->id);
+        $dosen = Auth::user()->dosen;
+        // dd(Auth::user()->id);
 
         // Ambil skripsi yang sudah disetujui dan terkait dengan dosen yang sedang login
         $skripsi = Skripsi::where('status', 'disetujui')

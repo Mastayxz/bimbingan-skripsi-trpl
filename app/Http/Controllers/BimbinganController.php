@@ -31,26 +31,6 @@ class BimbinganController extends Controller
         return view('bimbingan.index', compact('bimbingans'));
     }
 
-    // Tampilkan form tambah sesi bimbingan
-    public function create()
-    {
-        return view('bimbingans.create');
-    }
-
-    // // Simpan sesi bimbingan baru
-    // public function store(Request $request)
-    // {
-    //     $request->validate([
-    //         'skripsi_id' => 'required',
-    //         'dosen_id' => 'required',
-    //         'mahasiswa_id' => 'required',
-    //         'tanggal_bimbingan' => 'required|date',
-    //     ]);
-
-    //     Bimbingan::create($request->all());
-
-    //     return redirect()->route('bimbingans.index')->with('success', 'Sesi bimbingan berhasil ditambahkan.');
-    // }
 
     public function show($bimbingan_id)
     {
@@ -79,20 +59,5 @@ class BimbinganController extends Controller
         $progress = $totalTasks > 0 ? ($completedTasks / $totalTasks) * 100 : 0;
 
         return view('bimbingan.show', compact('bimbingan', 'tasks', 'progress'));
-    }
-
-    public function indexForDosen()
-    {
-        $dosenId = Auth::user()->dosen;
-        // Query untuk memuat bimbingan yang terkait dengan dosen
-        $bimbingans = Bimbingan::with(['skripsi', 'mahasiswa'])
-            ->where('dosen_pembimbing_1', $dosenId->id)
-            ->orWhere('dosen_pembimbing_2', $dosenId->id)
-            ->get();
-
-        // Debugging: Periksa apakah query mengembalikan data
-        // dd($bimbingans);
-
-        return view('bimbingan.index', compact('bimbingans'));
     }
 }

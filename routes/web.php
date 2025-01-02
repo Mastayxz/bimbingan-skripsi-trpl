@@ -32,28 +32,7 @@ Route::middleware('auth')->group(function () {
 Route::middleware(['auth', 'role:dosen'])->group(function () {
     Route::get('/dashboard/dosen', [DosenController::class, 'index'])->name('dashboard.dosen');
     Route::get('/dosen/skripsi', [DosenController::class, 'daftarSkripsi'])->name('skripsi.index');
-    Route::get('/dosen/bimbingans', [BimbinganController::class, 'indexForDosen'])->name('bimbingans.dosen.index');
 });
-// Menampilkan daftar task untuk bimbingan skripsi
-
-
-/*
-// Menampilkan daftar task untuk bimbingan
-Route::get('/bimbingan/{bimbingan_id}/tasks', [TaskController::class, 'index'])->name('tasks.index');
-
-// Menambahkan task baru (Hanya untuk Dosen)
-Route::post('/bimbingan/{bimbingan_id}/tasks', [TaskController::class, 'store'])->name('tasks.store');
-
-// Menangani upload file tugas oleh Mahasiswa (Untuk mengganti link file yang diupload, bukan menyimpan file ke storage)
-Route::post('/tasks/upload/{bimbingan_id}/{task_id}', [TaskController::class, 'upload'])->name('tasks.upload');
-
-// Routes untuk dosen, menambahkan task baru
-Route::get('/bimbingan/{bimbingan_id}/tasks/create', [TaskController::class, 'create'])->name('tasks.create');
-
-// Routes untuk mahasiswa, halaman upload tugas
-Route::get('/bimbingan/{bimbingan_id}/tasks/upload', [TaskController::class, 'unggah'])->name('tasks.unggah');
-*/
-
 
 
 
@@ -92,7 +71,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/bimbingan', [BimbinganController::class, 'index'])->name('bimbingan.index');
     Route::get('/bimbingan/{bimbingan_id}', [BimbinganController::class, 'show'])->name('bimbingans.show');
     // routes/web.php
-
     Route::get('/tasks/{task}', [TaskController::class, 'show'])->name('tasks.show');
     Route::post('/tasks/{task}/edit', [TaskController::class, 'edit'])->name('tasks.edit');
 });

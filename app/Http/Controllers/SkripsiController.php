@@ -29,7 +29,7 @@ class SkripsiController extends Controller
         if ($existingSkripsi) {
             return redirect()->route('skripsi.create')->with('error', 'Anda sudah memiliki skripsi yang disetujui dan tidak dapat mendaftar lagi.');
         }
-        dd($existingSkripsi);
+        // dd($existingSkripsi);
 
         // Validasi input
         $request->validate([
