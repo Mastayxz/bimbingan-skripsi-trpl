@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Task;
 use App\Models\Skripsi;
 use App\Models\Bimbingan;
+use App\Models\ProposalSkripsi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -20,6 +21,7 @@ class MahasiswaController extends Controller
 
         // Ambil skripsi yang terkait dengan mahasiswa yang sedang login
         $skripsi = Skripsi::where('mahasiswa', $user->id)->get();
+        $proposals = ProposalSkripsi::where('id_mahasiswa', $user->id)->get();
 
         // Ambil bimbingan yang terkait dengan mahasiswa
         $bimbingans = Bimbingan::where('mahasiswa_id', $user->id)
@@ -45,6 +47,6 @@ class MahasiswaController extends Controller
         }
 
         // Kirim data skripsi dan progress ke view
-        return view('dashboard.mahasiswa', compact('skripsi', 'progress'));
+        return view('dashboard.mahasiswa', compact('skripsi', 'progress', 'proposals'));
     }
 }

@@ -6,6 +6,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\DosenController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SkripsiController;
+use App\Http\Controllers\ProposalController;
 use App\Http\Controllers\BimbinganController;
 use App\Http\Controllers\MahasiswaController;
 
@@ -32,6 +33,12 @@ Route::middleware('auth')->group(function () {
 Route::middleware(['auth', 'role:dosen'])->group(function () {
     Route::get('/dashboard/dosen', [DosenController::class, 'index'])->name('dashboard.dosen');
     Route::get('/dosen/skripsi', [DosenController::class, 'daftarSkripsi'])->name('skripsi.index');
+    Route::get('/dosen/proposal', [DosenController::class, 'daftarProposal'])->name('dosen.proposal.index');
+    Route::put('/dosen/proposal/approve/{id_proposal}', [DosenController::class, 'approveProposal'])->name('dosen.proposal.approve');
+    Route::put('/dosen/proposal/reject/{id_proposal}', [DosenController::class, 'rejectProposal'])->name('dosen.proposal.reject');
+    Route::get('/dosen/proposal/detail/{id_proposal}', [ProposalController::class, 'showDetail'])->name('dosen.proposal.detail');
+    Route::get('/dosen/proposal/detail/{id_proposal}', [ProposalController::class, 'showDetail'])->name('dosen.proposal.detail');
+    Route::post('/dosen/proposal/ujian/{id_proposal}', [ProposalController::class, 'ujianProposal'])->name('dosen.proposal.ujian');
 });
 
 
@@ -41,6 +48,8 @@ Route::middleware(['auth', 'role:mahasiswa'])->group(function () {
     Route::get('/dashboard/mahasiswa', [MahasiswaController::class, 'mahasiswa'])->name('dashboard.mahasiswa');
     Route::get('/mahasiswa/skripsi', [SkripsiController::class, 'index'])->name('skripsi.create');
     Route::post('/mahasiswa/skripsi', [SkripsiController::class, 'store'])->name('skripsi.store');
+    Route::get('/proposal/create', [ProposalController::class, 'create'])->name('proposal.create');
+    Route::post('/proposal', [ProposalController::class, 'store'])->name('proposal.store');
 });
 
 // Rute untuk Admin
@@ -49,14 +58,26 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/admin/mahasiswa', [AdminController::class, 'listMahasiswa'])->name('admin.mahasiswa');
     Route::get('/admin/dosen', [AdminController::class, 'listDosen'])->name('admin.dosen');
     Route::get('/admin/skripsi', [AdminController::class, 'listSkripsi'])->name('admin.skripsi.index');
+    Route::get('/admin/proposal', [AdminController::class, 'listProposal'])->name('admin.Proposal.index');
+
+    // create bimbingan dari skripsi lulus ujian
     Route::get('/admin/skripsi/approve/{id_skripsi}', [AdminController::class, 'approveSkripsi'])->name('admin.skripsi.approve');
     Route::get('/admin/skripsi/reject/{id_skripsi}', [AdminController::class, 'rejectSkripsi'])->name('admin.skripsi.reject');
 
-    // Rute untuk mengedit mahasiswa
-    Route::get('/admin/mahasiswa/edit/{id}', [AdminController::class, 'editMahasiswa'])->name('admin.mahasiswa.edit');
 
-    // Rute untuk menghapus mahasiswa
+    // Rute untuk manage mahasiswa
+    Route::get('/admin/mahasiswa/edit/{id}', [AdminController::class, 'editMahasiswa'])->name('admin.mahasiswa.edit');
     Route::get('/admin/mahasiswa/delete/{id}', [AdminController::class, 'deleteMahasiswa'])->name('admin.mahasiswa.delete');
+
+    // Rute untuk manage dosen
+    Route::get('/admin/dosen/edit/{id}', [AdminController::class, 'editDosen'])->name('admin.dosen.edit');
+    Route::post('/admin/dosen/update/{id}', [AdminController::class, 'updateDosen'])->name('admin.dosen.update');
+    Route::get('/admin/dosen/delete/{id}', [AdminController::class, 'deleteDosen'])->name('admin.dosen.delete');
+
+    // Rute untuk manage Skripsi
+    Route::get('/admin/skripsi/edit/{id}', [SkripsiController::class, 'edit'])->name('admin.skripsi.edit');
+    Route::post('/admin/skripsi/update/{id}', [SkripsiController::class, 'editDosenPembimbing'])->name('admin.skripsi.update');
+    Route::post('/admin/dosen/{dosenId}/make-admin', [AdminController::class, 'makeAdmin'])->name('dosen.makeAdmin');
 });
 
 

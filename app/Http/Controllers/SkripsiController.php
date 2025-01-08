@@ -17,6 +17,33 @@ class SkripsiController extends Controller
         return view('mahasiswa.skripsi.create', compact('dosens'));
     }
 
+    public function edit(Skripsi $skripsi, $id)
+    {
+        $skripsi = Skripsi::findOrFail($id);
+        $dosens = Dosen::all();
+
+        return view('admin.skripsi.edit', compact('skripsi', 'dosens'));
+    }
+
+    public function editDosenPembimbing(Request $request, Skripsi $skripsi, $id)
+    {
+        $skripsi = Skripsi::findOrFail($id);
+        // Validasi input
+        $request->validate([
+            'dosen_pembimbing_1' => 'required|exists:dosens,id',
+            'dosen_pembimbing_2' => 'required|exists:dosens,id|different:dosen_pembimbing_1',
+        ]);
+
+        // Update dosen pembimbing skripsi
+        $skripsi->update([
+            'dosen_pembimbing_1' => $request->dosen_pembimbing_1,
+            'dosen_pembimbing_2' => $request->dosen_pembimbing_2,
+        ]);
+
+        return redirect()->route('admin.skripsi.index', $skripsi)->with('success', 'Dosen pembimbing berhasil diperbarui.');
+    }
+
+
     public function store(Request $request)
     {
         // Periksa apakah mahasiswa sudah memiliki skripsi yang disetujui

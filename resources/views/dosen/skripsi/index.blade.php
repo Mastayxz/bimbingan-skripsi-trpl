@@ -31,7 +31,13 @@
                     <td class="px-4 py-3">{{  $item->judul_skripsi  }}</td>
                     <td class="px-4 py-3">{{ $item->mahasiswaSkripsi->nama }}</td>
                     <td class="px-4 py-3">{{ $item->dosenPembimbing1->nama}}</td>
-                    <td class="px-4 py-3">{{ $item->dosenPembimbing2->nama}}</td>
+                    <td class="px-4 py-3">
+                        @if($item->dosenPembimbing2)
+                            {{ $item->dosenPembimbing2->nama }}
+                        @else
+                            <span class="text-gray-500">Belum ditentukan</span>
+                        @endif
+                    </td>
                     <td class="px-4 py-3 text-center">
                         <!-- Status -->
                         <span class="inline-block py-1 px-3 text-sm font-semibold rounded-full 

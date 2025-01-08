@@ -13,7 +13,7 @@
         <div class="flex items-center space-x-4">
             <!-- Foto Profil dan Nama -->
             <div class="flex items-center space-x-3">
-                <img src="https://via.placeholder.com/40" alt="Profile Picture" class="h-10 w-10 rounded-full border-2 border-white">
+                {{-- <img src="https://via.placeholder.com/40" alt="Profile Picture" class="h-10 w-10 rounded-full border-2 border-white"> --}}
                 <div class="text-right">
                     <h3 class="font-medium text-sm">{{ Auth::user()->name }}</h3>
                     <span class="text-green-400 text-xs font-semibold">● ONLINE</span>

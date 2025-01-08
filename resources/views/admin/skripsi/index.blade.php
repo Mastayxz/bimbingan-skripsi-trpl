@@ -20,8 +20,10 @@
                 <th class="px-4 py-3 text-left">Nama Mahasiswa</th>
                 <th class="px-4 py-3 text-left">Tanggal Pengajuan</th>
                 <th class="px-4 py-3 text-left">Status</th>
-                <th class="px-4 py-3 text-left">Nama Dosen Pembimbing</th>
+                <th class="px-4 py-3 text-left">Nama Dosen Pembimbing 1</th>
+                <th class="px-4 py-3 text-left">Nama Dosen Pembimbing 2</th>
                 <th class="px-4 py-3 text-center">Aksi</th>
+                <th class="px-4 py-3 text-center">Kelola</th>
             </tr>
         </thead>
         <tbody class="text-gray-800">
@@ -29,7 +31,7 @@
                 <tr class="border-b hover:bg-gray-50">
                     <td class="px-4 py-3 text-center">{{ $loop->iteration }}</td>
                     <td class="px-4 py-3">{{ $item->judul_skripsi }}</td>
-                    <td class="px-4 py-3">{{ $item->mahasiswa_nama }}</td>
+                    <td class="px-4 py-3">{{ $item->mahasiswaSkripsi->nama }}</td>
                     <td class="px-4 py-3">{{ \Carbon\Carbon::parse($item->tanggal_pengajuan)->format('d M Y') }}</td>
                     <td class="px-4 py-3 text-center">
                         <!-- Status -->
@@ -40,23 +42,30 @@
                             {{ ucfirst($item->status) }}
                         </span>
                     </td>
-                    <td class="px-4 py-3">{{ $item->dosen_nama }}</td>
+                    <td class="px-4 py-3">{{ $item->dosenPembimbing1->nama }}</td>
+                    <td class="px-4 py-3">
+                        @if($item->dosenPembimbing2)
+                            {{ $item->dosenPembimbing2->nama }}
+                        @else
+                            <span class="text-gray-500">Belum ditentukan</span>
+                        @endif
+                    </td>
                     <td class="px-4 py-3 text-center space-x-2">
                         <!-- Aksi untuk pengajuan yang masih pending -->
-                        @if($item->status == 'diajukan')
+                        @if($item->status == 'berjalan')
                             <a href="{{ route('admin.skripsi.approve', $item->id_skripsi) }}" 
                                class="inline-block py-2 px-4 bg-green-500 text-white text-sm rounded hover:bg-green-600">
-                               Setujui
+                               Acc Bimbingan
                             </a>
-                            <a href="{{ route('admin.skripsi.reject', $item->id_skripsi) }}" 
-                               class="inline-block py-2 px-4 bg-red-500 text-white text-sm rounded hover:bg-red-600">
-                               Tolak
-                            </a>
-                        @elseif($item->status == 'disetujui')
-                            <span class="text-green-600 font-semibold">Disetujui</span>
-                        @elseif($item->status == 'ditolak')
-                            <span class="text-red-600 font-semibold">Ditolak</span>
+                        @elseif($item->status == 'selesai')
+                            <span class="text-green-600 font-semibold">Selesai</span>
                         @endif
+                    </td>
+                    <td>
+                        <a href="{{ route('admin.skripsi.edit', $item->id_skripsi) }}" 
+                           class="inline-block py-2 px-4 bg-blue-500 text-white text-sm rounded hover:bg-blue-600">
+                           Edit
+                        </a>
                     </td>
                 </tr>
             @endforeach

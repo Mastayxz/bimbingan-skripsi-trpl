@@ -60,4 +60,19 @@ class BimbinganController extends Controller
 
         return view('bimbingan.show', compact('bimbingan', 'tasks', 'progress'));
     }
+
+    public function indexForDosen()
+    {
+        $dosenId = Auth::user()->dosen;
+        // Query untuk memuat bimbingan yang terkait dengan dosen
+        $bimbingans = Bimbingan::with(['skripsi', 'mahasiswa'])
+            ->where('dosen_pembimbing_1', $dosenId->id)
+            ->orWhere('dosen_pembimbing_2', $dosenId->id)
+            ->get();
+
+        // Debugging: Periksa apakah query mengembalikan data
+        // dd($bimbingans);
+
+        return view('bimbingan.index', compact('bimbingans'));
+    }
 }

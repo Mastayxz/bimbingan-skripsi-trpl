@@ -27,11 +27,15 @@ class Mahasiswa extends Model
     //
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->hasOne(User::class, 'mahasiswa_id');
     }
     // Relasi dengan Skripsi
     public function skripsiMahasiswa()
     {
         return $this->hasMany(Skripsi::class, 'mahasiswa', 'id'); // Memastikan 'mahasiswa' merujuk ke ID Mahasiswa
+    }
+    public function proposalMahasiswa()
+    {
+        return $this->hasMany(ProposalSkripsi::class, 'id_mahasiswa', 'id'); // Memastikan 'mahasiswa' merujuk ke ID Mahasiswa
     }
 }

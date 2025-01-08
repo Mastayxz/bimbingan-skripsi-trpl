@@ -25,7 +25,10 @@ class Skripsi extends Model
         'status',
         'abstrak',
     ];
-
+    public function proposal()
+    {
+        return $this->belongsTo(ProposalSkripsi::class, 'id_proposal');
+    }
     // Relasi dengan Mahasiswa
     public function mahasiswaSkripsi()
     {

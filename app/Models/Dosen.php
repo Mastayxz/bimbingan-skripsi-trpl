@@ -24,9 +24,14 @@ class Dosen extends Model
         'nidn'
     ];
     //
+    // public function user()
+    // {
+    //     return $this->belongsTo(User::class);
+    // }
+
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->hasOne(User::class, 'dosen_id');
     }
     // Relasi dengan Skripsi
     public function skripsiPembimbing1()
@@ -37,5 +42,9 @@ class Dosen extends Model
     public function skripsiPembimbing2()
     {
         return $this->hasMany(Skripsi::class, 'dosen_pembimbing_2');
+    }
+    public function ProposalPembimbing()
+    {
+        return $this->hasMany(ProposalSkripsi::class, 'id_dosen_pembimbing_1');
     }
 }

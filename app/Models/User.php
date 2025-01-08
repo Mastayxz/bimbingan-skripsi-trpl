@@ -22,6 +22,8 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'dosen_id',
+        'mahasiswa_id',
     ];
 
     /**
@@ -46,14 +48,24 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+    // public function mahasiswa()
+    // {
+    //     return $this->hasOne(Mahasiswa::class);
+    // }
+
+    // // Relasi ke model Dosen
+    // public function dosen()
+    // {
+    //     return $this->hasOne(Dosen::class, 'user_id', 'id');
+    // }
+
     public function mahasiswa()
     {
-        return $this->hasOne(Mahasiswa::class);
+        return $this->belongsTo(Mahasiswa::class, 'mahasiswa_id');
     }
 
-    // Relasi ke model Dosen
     public function dosen()
     {
-        return $this->hasOne(Dosen::class, 'user_id', 'id');
+        return $this->belongsTo(Dosen::class, 'dosen_id');
     }
 }

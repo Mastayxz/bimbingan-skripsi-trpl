@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ config('app.name', 'Laravel') }}</title>
+    <title>{{ config('app.name') }}</title>
 
     <!-- Font Awesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
@@ -23,11 +23,11 @@
         <div class="fixed top-16 left-0 w-64 bg-gray-100 text-black p-6 flex flex-col shadow-md border-r border-gray-500 h-[calc(100vh-4rem)]">
             <!-- Profile Section -->
             <div class="flex flex-row items-center mb-8">
-                <img class="h-20 w-20 rounded-full border-4 border-white" 
-                    src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60" 
+                <img class="h-30 w-20 border-4 border-gray-800 " 
+                    src="{{ asset('images/user.png') }}" 
                     alt="Profile Picture">
-                <div class="mt-3 text-center">
-                    <a href="{{ route('profile.edit') }}" class="font-semibold text-md hover:text-gray-200">
+                <div class="mt-2 mx-1 text-left">
+                    <a href="{{ route('profile.edit') }}" class="font-semibold text-md hover:text-blue-400">
                         {{ Auth::user()->name }}
                     </a>
                 </div>
@@ -65,6 +65,10 @@
                             <a href="{{ route('skripsi.create') }}" class="block py-2 px-4 rounded hover:bg-gray-500 w-full hover:text-white">Buat Skripsi</a>
                         </li>
                         <li class="border-b border-gray-200 flex items-center">
+                            <i class="fas fa-file-alt px-2"></i>
+                            <a href="{{ route('proposal.create') }}" class="block py-2 px-4 rounded hover:bg-gray-500 w-full hover:text-white">Daftarkan Proposal</a>
+                        </li>
+                        <li class="border-b border-gray-200 flex items-center">
                             <i class="fas fa-comments px-2"></i>
                             <a href="{{ route('bimbingan.index') }}" class="block py-2 px-4 rounded hover:bg-gray-500 w-full hover:text-white">Bimbingan</a>
                         </li>
@@ -80,6 +84,12 @@
                         <i class="fas fa-file-alt px-2"></i>
                         <a href="{{ route('skripsi.index') }}" class="block py-2 px-4 rounded hover:bg-gray-500 w-full hover:text-white">
                             Daftar Skripsi
+                        </a>
+                    </li>
+                    <li class="border-b border-gray-200 flex items-center">
+                        <i class="fas fa-file-alt px-2"></i>
+                        <a href="{{ route('dosen.proposal.index') }}" class="block py-2 px-4 rounded hover:bg-gray-500 w-full hover:text-white">
+                            Daftar Pengajuan Proposal
                         </a>
                     </li>
                     <li class="border-b border-gray-200 flex items-center">
