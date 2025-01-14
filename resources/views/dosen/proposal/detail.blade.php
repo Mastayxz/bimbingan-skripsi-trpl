@@ -26,7 +26,7 @@
         <h3 class="text-xl font-semibold mb-2">File Proposal</h3>
         <p class="text-gray-700 mb-4">
             @if($proposal->file_proposal)
-                <a href="{{ asset('storage/' . $proposal->file_proposal) }}" 
+                <a href="{{ $proposal->file_proposal }}" 
                    target="_blank" 
                    class="text-blue-500 hover:underline">
                    Unduh Proposal
@@ -48,22 +48,29 @@
 
         <h3 class="text-xl font-semibold mb-2">Komentar</h3>
         <p class="text-gray-700 mb-6">{{ $proposal->komentar ?? 'Belum ada komentar' }}</p>
+        @if ($proposal->status === 'disetujui' || $proposal->status === 'bimbingan')
+            <form action="{{ route('proposals.addComment', $proposal->id_proposal) }}" method="POST" class="bg-gray-100 p-4 rounded-lg shadow-md">
+            @csrf
+            <div class="mb-3">
+                <label for="comment" class="block text-sm font-medium text-gray-700">Tambahkan Komentar</label>
+                <textarea name="komentar" id="comment" rows="3" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" required></textarea>
+            </div>
+            <div class="flex justify-end">
+                <button type="submit" class="py-2 px-4 bg-blue-500 text-white rounded hover:bg-blue-600">Tambah Komentar</button>
+            </div>
+            </form>
+        @endif
+
 
         <!-- Aksi -->
         <div class="mt-4 space-x-2">
             @if($proposal->status == 'diajukan')
-                <form action="{{ route('dosen.proposal.approve', $proposal->id_proposal) }}" method="POST" class="inline-block">
-                    @csrf
-                    <button type="submit" class="py-2 px-4 bg-green-500 text-white rounded hover:bg-green-600">
-                        Setujui
-                    </button>
-                </form>
-                <form action="{{ route('dosen.proposal.reject', $proposal->id_proposal) }}" method="POST" class="inline-block">
-                    @csrf
-                    <button type="submit" class="py-2 px-4 bg-red-500 text-white rounded hover:bg-red-600">
-                        Tolak
-                    </button>
-                </form>
+                <button onclick="openApproveModal({{ $proposal->id_proposal }})" class="py-2 px-4 bg-green-500 text-white rounded hover:bg-green-600">
+                    Setujui
+                </button>
+                <button onclick="openRejectModal({{ $proposal->id_proposal }})" class="py-2 px-4 bg-red-500 text-white rounded hover:bg-red-600">
+                    Tolak
+                </button>
             @endif
             @if($proposal->status == 'disetujui')
                 <form action="{{ route('dosen.proposal.ujian', $proposal->id_proposal) }}" method="POST" class="inline-block">
@@ -85,5 +92,63 @@
         </a>
     </div>
 </div>
+
+<!-- Modal Approve -->
+<div id="approveModal" class="fixed inset-0 hidden bg-black bg-opacity-50 flex items-center justify-center">
+    <div class="bg-white rounded-lg shadow-lg w-1/3">
+        <form id="approveForm" method="POST">
+            @csrf
+            @method('PUT')
+
+            <div class="p-4">
+                <h2 class="text-xl font-bold mb-4">Setujui Proposal</h2>
+                <textarea name="komentar" class="w-full border-gray-300 rounded p-2" rows="3" placeholder="Masukkan komentar..." required></textarea>
+                <div class="flex justify-end mt-4">
+                    <button type="button" onclick="closeModal('approveModal')" class="py-2 px-4 bg-gray-500 text-white rounded hover:bg-gray-600 mr-2">Batal</button>
+                    <button type="submit" class="py-2 px-4 bg-green-500 text-white rounded hover:bg-green-600">Setujui</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Modal Reject -->
+<div id="rejectModal" class="fixed inset-0 hidden bg-black bg-opacity-50 flex items-center justify-center">
+    <div class="bg-white rounded-lg shadow-lg w-1/3">
+        <form id="rejectForm" method="POST">
+            @csrf
+            @method('PUT')
+
+            <div class="p-4">
+                <h2 class="text-xl font-bold mb-4">Tolak Proposal</h2>
+                <textarea name="komentar" class="w-full border-gray-300 rounded p-2" rows="3" placeholder="Masukkan komentar..." required></textarea>
+                <div class="flex justify-end mt-4">
+                    <button type="button" onclick="closeModal('rejectModal')" class="py-2 px-4 bg-gray-500 text-white rounded hover:bg-gray-600 mr-2">Batal</button>
+                    <button type="submit" class="py-2 px-4 bg-red-500 text-white rounded hover:bg-red-600">Tolak</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    function openApproveModal(id) {
+        const modal = document.getElementById('approveModal');
+        const form = document.getElementById('approveForm');
+        form.action = `/dosen/proposal/approve/${id}`; // Atur action sesuai ID proposal
+        modal.classList.remove('hidden');
+    }
+
+    function openRejectModal(id) {
+        const modal = document.getElementById('rejectModal');
+        const form = document.getElementById('rejectForm');
+        form.action = `/dosen/proposal/reject/${id}`; // Atur action sesuai ID proposal
+        modal.classList.remove('hidden');
+    }
+
+    function closeModal(modalId) {
+        document.getElementById(modalId).classList.add('hidden');
+    }
+</script>
 
 @endsection

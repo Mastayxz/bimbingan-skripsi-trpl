@@ -21,7 +21,9 @@ class Mahasiswa extends Model
         'jurusan',
         'email',
         'password',
-        'prodi'
+        'prodi',
+        'telepon',
+        'jenjang'
     ];
     //
     //

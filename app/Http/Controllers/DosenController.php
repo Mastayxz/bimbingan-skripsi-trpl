@@ -44,24 +44,57 @@ class DosenController extends Controller
         return redirect()->route('dosen.proposal.index')->with('success', 'Proposal berhasil ditolak.');
     }
 
+    public function addComment(Request $request, $id)
+    {
+        $proposal = ProposalSkripsi::findOrFail($id);
+
+        // Validasi input
+        $request->validate([
+            'komentar' => 'required|string|max:255',
+        ]);
+
+        // Tambahkan komentar baru ke riwayat komentar
+        $newComment = $request->komentar;
+        $existingComments = $proposal->komentar ? $proposal->komentar . '|' : '';
+        $proposal->komentar = $existingComments . $newComment;
+
+        // Ubah status ke "Bimbingan" jika belum
+        if ($proposal->status === 'Disetujui') {
+            $proposal->status = 'Bimbingan';
+        }
+
+        $proposal->save();
+
+        return redirect()->back()->with('success', 'Komentar berhasil ditambahkan!');
+    }
 
     //
     public function index()
     {
         // Ambil dosen yang sedang login
         $dosen = Auth::user()->dosen;
-        // dd(Auth::user()->id);
 
-        // Ambil skripsi yang sudah disetujui dan terkait dengan dosen yang sedang login
-        $proposals = ProposalSkripsi::whereIn('status', ['disetujui', 'ikut ujian', 'lulus ujian'])
+        // Hitung total proposal yang terkait dengan dosen yang sedang login
+        $totalProposals = ProposalSkripsi::where('id_dosen_pembimbing_1', $dosen->id)->count();
+        $proposalsOnExam = ProposalSkripsi::where('status', 'ikut ujian')->where('id_dosen_pembimbing_1', $dosen->id)->count();
+        $proposalsInProgress = Skripsi::where('status', 'berjalan')
             ->where(function ($query) use ($dosen) {
-                $query->where('id_dosen_pembimbing_1', $dosen->id);
-            }) // Ambil 5 skripsi terbaru
+                $query->where('dosen_pembimbing_1', $dosen->id)
+                    ->orWhere('dosen_pembimbing_2', $dosen->id);
+            })->count();
+
+        $completedProposals = Skripsi::where('status', 'selesai')
+            ->where(function ($query) use ($dosen) {
+                $query->where('dosen_pembimbing_1', $dosen->id)
+                    ->orWhere('dosen_pembimbing_2', $dosen->id);
+            })->count();
+
+        // Ambil proposal yang sudah disetujui dan terkait dengan dosen yang sedang login
+        $proposals = ProposalSkripsi::whereIn('status', ['disetujui', 'ikut ujian', 'lulus ujian'])
+            ->where('id_dosen_pembimbing_1', $dosen->id)
             ->get();
 
-
-
-        return view('dashboard.dosen', compact('proposals'));
+        return view('dashboard.dosen', compact('proposals', 'totalProposals', 'proposalsOnExam', 'proposalsInProgress', 'completedProposals'));
     }
     public function daftarSKripsi()
     {
@@ -73,11 +106,10 @@ class DosenController extends Controller
 
 
         // Query untuk mendapatkan daftar skripsi
-        $skripsi = Skripsi::where('status', 'berjalan')
-            ->where(function ($query) use ($dosen) {
-                $query->where('dosen_pembimbing_1', $dosen->id)
-                    ->orWhere('dosen_pembimbing_2', $dosen->id);
-            }) // Ambil 5 skripsi terbaru
+        $skripsi = Skripsi::where(function ($query) use ($dosen) {
+            $query->where('dosen_pembimbing_1', $dosen->id)
+                ->orWhere('dosen_pembimbing_2', $dosen->id);
+        }) // Ambil 5 skripsi terbaru
             ->get();
 
 

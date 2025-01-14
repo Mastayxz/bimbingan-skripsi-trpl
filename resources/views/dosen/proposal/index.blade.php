@@ -52,21 +52,40 @@
                         <!-- Aksi untuk pengajuan yang masih pending -->
                         @if($proposal->status == 'diajukan')
                             <!-- Tombol Setujui dengan Modal -->
-                            <button onclick="openApproveModal({{ $proposal->id_proposal }})" 
-                                    class="inline-block py-2 px-4 bg-green-500 text-white text-sm rounded hover:bg-green-600">
-                                Setujui
-                            </button>
-                    
-                            <!-- Tombol Tolak dengan Modal -->
-                            <button onclick="openRejectModal({{ $proposal->id_proposal }})" 
-                                    class="inline-block py-2 px-4 bg-red-500 text-white text-sm rounded hover:bg-red-600">
-                                Tolak
-                            </button>
+                            <div x-data="{ open: false }" class="relative inline-block text-left">
+                                <!-- Tombol dengan Icon -->
+                                <button @click="open = !open" class="inline-block p-2 bg-blue-500 text-white rounded-full hover:bg-blue-600 focus:outline-none">
+                                    <!-- Icon tiga titik -->
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                                        <circle cx="12" cy="5" r="1" />
+                                        <circle cx="12" cy="12" r="1" />
+                                        <circle cx="12" cy="19" r="1" />
+                                    </svg>
+                                </button>
+                            
+                                <!-- Dropdown Menu -->
+                                <div x-show="open" @click.away="open = false" class="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-gray-800 text-white ring-1 ring-black ring-opacity-5">
+                                    <div class="py-1">
+                                        <button onclick="openApproveModal({{ $proposal->id_proposal }})" 
+                                                class="block w-full text-left px-4 py-2 text-sm text-gray-300 hover:bg-gray-700">
+                                            Setujui
+                                        </button>
+                                        <button onclick="openRejectModal({{ $proposal->id_proposal }})" 
+                                                class="block w-full text-left px-4 py-2 text-sm text-gray-300 hover:bg-gray-700">
+                                            Tolak
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            
                         @elseif($proposal->status == 'disetujui')
                             <span class="text-green-600 font-semibold">Disetujui</span>
                         @elseif($proposal->status == 'ditolak')
                             <span class="text-red-600 font-semibold">Ditolak</span>
+                        @elseif($proposal->status == 'ikut ujian')
+                            <span class="text-yellow-600 font-semibold">ikut ujian</span>
                         @endif
+                        <!-- Tombol Aksi dengan Modal -->
                         
                     </td>
 

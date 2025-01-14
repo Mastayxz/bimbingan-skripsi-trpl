@@ -79,7 +79,7 @@ class TaskController extends Controller
 
         if ($request->has('status')) {
             $request->validate([
-                'status' => 'required|in:disetujui,sedang direvisi,menunggu persetujuan',
+                'status' => 'required|in:ACC,revisi,dikerjakan',
                 'komentar_dosen' => 'nullable|string',
             ]);
 

@@ -33,7 +33,7 @@
                     <li class="mb-2">
                         <span class="font-semibold">Status:</span> {{ $revisi['status'] }} <br>
                         <span class="font-semibold">Komentar:</span> {{ $revisi['komentar_dosen'] ?? 'Tidak ada' }} <br>
-                        <span class="font-semibold">Waktu:</span> {{ $revisi['updated_at'] }}
+                        <span class="font-semibold">Waktu:</span> {{ \Carbon\Carbon::parse($revisi['updated_at'])->format('d M Y ') }}
                     </li>
                 @endforeach
             </ul>
@@ -49,6 +49,9 @@
             @csrf
             @method('PUT')
 
+            
+
+            @role('mahasiswa')
             <!-- Nama Tugas -->
             <div class="mb-4">
                 <label for="nama_tugas" class="block text-gray-200 mb-2">Nama Tugas</label>
@@ -61,9 +64,7 @@
                 <label for="deskripsi" class="block text-gray-200 mb-2">Deskripsi</label>
                 <textarea id="deskripsi" name="deskripsi" rows="4" 
                     class="w-full p-2 rounded border border-gray-700 bg-gray-700 text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-400">{{ $task->deskripsi }}</textarea>
-            </div>
-
-            @role('mahasiswa')
+            </div>  
             <!-- Upload File -->
             <div class="mb-4">
                 <label for="file_mahasiswa" class="block text-gray-200 mb-2">Unggah File</label>
@@ -73,14 +74,27 @@
             @endrole
 
             @role('dosen')
+             <!-- Nama Tugas -->
+             <div class="mb-4">
+                <label for="nama_tugas" class="block text-gray-200 mb-2">Nama Tugas</label>
+                <input type="text" id="nama_tugas" name="nama_tugas" value="{{ $task->nama_tugas }}" 
+                    class="w-full p-2 rounded border border-gray-700 bg-gray-700 text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-400" disabled>
+            </div>
+
+            <!-- Deskripsi -->
+            <div class="mb-4">
+                <label for="deskripsi" class="block text-gray-200 mb-2">Deskripsi</label>
+                <textarea id="deskripsi" name="deskripsi" rows="4" 
+                    class="w-full p-2 rounded border border-gray-700 bg-gray-700 text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-400" disabled>{{ $task->deskripsi }}</textarea>
+            </div>  
             <!-- Status -->
             <div class="mb-4">
                 <label for="status" class="block text-gray-200 mb-2">Status</label>
                 <select id="status" name="status" 
                     class="w-full p-2 rounded border border-gray-700 bg-gray-700 text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-400">
-                    <option value="menunggu persetujuan" {{ $task->status == 'menunggu persetujuan' ? 'selected' : '' }}>Menunggu Persetujuan</option>
-                    <option value="disetujui" {{ $task->status == 'disetujui' ? 'selected' : '' }}>Disetujui</option>
-                    <option value="sedang direvisi" {{ $task->status == 'sedang direvisi' ? 'selected' : '' }}>Sedang Direvisi</option>
+                    <option value="dikerjakan" {{ $task->status == 'dikerjakan' ? 'selected' : '' }}>Dikerjakan</option>
+                    <option value="ACC" {{ $task->status == 'ACC' ? 'selected' : '' }}>ACC</option>
+                    <option value="revisi" {{ $task->status == 'revisi' ? 'selected' : '' }}>Revisi</option>
                 </select>
             </div>
 
@@ -94,7 +108,7 @@
 
             <!-- Submit Button -->
             <button type="submit" class="w-full py-2 px-4 bg-blue-500 text-white font-semibold rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400">
-                Simpan Perubahan
+                Simpan
             </button>
         </form>
     </div>

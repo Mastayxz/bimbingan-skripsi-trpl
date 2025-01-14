@@ -45,10 +45,66 @@ class AdminController extends Controller
         return view('admin.mahasiswa.index', compact('mahasiswa'));
     }
 
+    // Controller: MahasiswaController.php
+    public function searchMahasiswa(Request $request)
+    {
+        $keyword = $request->input('keyword');
+
+        // Mencari mahasiswa berdasarkan nama atau NIM
+        $mahasiswa = Mahasiswa::where('nama', 'like', "%{$keyword}%")
+            ->orWhere('nim', 'like', "%{$keyword}%")
+            ->paginate(25);
+
+        // dd($mahasiswa); // Periksa hasil query
+        return view('admin.mahasiswa.index', compact('mahasiswa', 'keyword'));
+    }
+
+    public function searchDosen(Request $request)
+    {
+        $keyword = $request->input('keyword');
+
+        // Mencari dosen berdasarkan nama atau NIP
+        $dosen = Dosen::where('nama', 'like', "%{$keyword}%")
+            ->orWhere('nip', 'like', "%{$keyword}%")
+            ->paginate(25);
+
+        return view('admin.dosen.index', compact('dosen', 'keyword'));
+    }
+
+    public function searchSkripsi(Request $request)
+    {
+        $keyword = $request->input('keyword');
+
+        // Mencari skripsi berdasarkan NIM mahasiswa atau NIP dosen pembimbing 1 atau 2
+        $skripsi = Skripsi::whereHas('mahasiswaSkripsi', function ($query) use ($keyword) {
+            $query->where('nim', 'like', "%{$keyword}%");
+        })->orWhereHas('dosenPembimbing1', function ($query) use ($keyword) {
+            $query->where('nip', 'like', "%{$keyword}%");
+        })->orWhereHas('dosenPembimbing2', function ($query) use ($keyword) {
+            $query->where('nip', 'like', "%{$keyword}%");
+        })->paginate(25);
+
+        return view('admin.skripsi.index', compact('skripsi', 'keyword'));
+    }
+
+    public function searchProposal(Request $request)
+    {
+        $keyword = $request->input('keyword');
+
+        // Mencari proposal berdasarkan NIM mahasiswa atau NIP dosen pembimbing 1
+        $proposal = ProposalSkripsi::whereHas('mahasiswaProposal', function ($query) use ($keyword) {
+            $query->where('nim', 'like', "%{$keyword}%");
+        })->orWhereHas('dosenPembimbing1Proposal', function ($query) use ($keyword) {
+            $query->where('nip', 'like', "%{$keyword}%");
+        })->paginate(25);
+
+        return view('admin.proposal.index', compact('proposal', 'keyword'));
+    }
+
     // Menampilkan daftar dosen
     public function listDosen()
     {
-        $dosen = Dosen::paginate(25); // Mengambil semua data dosen
+        $dosen = Dosen::paginate(10); // Mengambil semua data dosen
         return view('admin.dosen.index', compact('dosen'));
     }
 
@@ -80,7 +136,7 @@ class AdminController extends Controller
         $skripsi = Skripsi::findOrFail($id_skripsi);
 
         // 2. Perbarui status skripsi menjadi 'disetujui'
-        $skripsi->status = 'selesai';
+        $skripsi->status = 'berjalan';
         $skripsi->save();
 
         // 3. Periksa apakah sesi bimbingan sudah ada

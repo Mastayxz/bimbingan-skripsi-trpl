@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Dosen;
 use App\Models\Skripsi;
+use App\Models\Mahasiswa;
 use Illuminate\Http\Request;
 use App\Models\ProposalSkripsi;
 use Illuminate\Support\Facades\Auth;
@@ -22,7 +23,7 @@ class ProposalController extends Controller
         // Periksa apakah mahasiswa sudah memiliki proposal yang disetujui
         $mahasiswa = Auth::user()->mahasiswa;
         $existingProposal = ProposalSkripsi::where('id_mahasiswa', $mahasiswa->id)
-            ->where('status', 'diajukan') // Cek hanya proposal yang disetujui
+            ->where('status', ['diajukan', 'disetujui', 'ikut ujian']) // Cek hanya proposal yang disetujui
             ->first();
 
         if ($existingProposal) {
@@ -34,12 +35,12 @@ class ProposalController extends Controller
             'judul_proposal' => 'required|string|max:255',
             'tanggal_pengajuan' => 'required|date',
             'deskripsi' => 'required|string|max:1000',
-            'file_proposal' => 'required|mimes:pdf|max:2048', // Hanya menerima file PDF maksimal 2MB
+            'file_proposal' => 'required|string|max:1000', // Hanya menerima file PDF maksimal 2MB
             'dosen_pembimbing_1' => 'required|exists:dosens,id',
         ]);
 
         // Upload file proposal
-        $filePath = $request->file('file_proposal')->store('proposals', 'public');
+        // $filePath = $request->file('file_proposal')->store('proposals', 'public');
 
         // Buat data proposal baru
         ProposalSkripsi::create([
@@ -47,7 +48,7 @@ class ProposalController extends Controller
             'judul' => $request->judul_proposal,
             'deskripsi' => $request->deskripsi,
             'tanggal_pengajuan' => $request->tanggal_pengajuan,
-            'file_proposal' => $filePath,
+            'file_proposal' => $request->file_proposal,
             'id_dosen_pembimbing_1' => $request->dosen_pembimbing_1,
             'status' => 'diajukan', // Set status default sebagai menunggu
         ]);
@@ -79,10 +80,65 @@ class ProposalController extends Controller
         $skripsi->mahasiswa = $proposal->id_mahasiswa;
         $skripsi->dosen_pembimbing_1 = $proposal->id_dosen_pembimbing_1;
         $skripsi->dosen_pembimbing_2 = null; // Admin Kaprodi akan menetapkan dospem 2
-        $skripsi->status = 'berjalan'; // Status default untuk skripsi
+        $skripsi->status = 'lulus ujian'; // Status default untuk skripsi
         $skripsi->link_document = $proposal->file_proposal; // Mengambil file proposal sebagai file skripsi (jika diperlukan)
         $skripsi->save();
 
         return redirect()->route('dosen.proposal.index')->with('success', 'Proposal berhasil disetujui dan skripsi telah dibuat.');
+    }
+
+    public function getProposalUjian($id_proposal)
+    {
+        // Mencari proposal berdasarkan ID
+        $proposal = ProposalSkripsi::findOrFail($id_proposal);
+
+        // Ambil NIM mahasiswa dari proposal
+        $mahasiswa = Mahasiswa::findOrFail($proposal->id_mahasiswa);
+        $nim = $mahasiswa->nim; // Ambil NIM mahasiswa
+
+        // Menyiapkan data untuk dikirim melalui API
+        $data = [
+            'id_proposal' => $proposal->id_proposal,
+            'judul' => $proposal->judul,
+            'tanggal_pengajuan' => $proposal->tanggal_pengajuan,
+            'nim' => $nim,
+            'dosen_pembimbing_1' => $proposal->id_dosen_pembimbing_1,
+            'status' => $proposal->status,
+            'file_proposal' => $proposal->file_proposal,
+        ];
+
+        // Mengembalikan response dalam format JSON
+        return response()->json([
+            'success' => true,
+            'message' => 'Data proposal berhasil ditemukan.',
+            'data' => $data,
+        ]);
+    }
+    public function getAllProposalUjian()
+    {
+        // Ambil semua proposal yang memiliki status 'ikut ujian'
+        $proposals = ProposalSkripsi::where('status', 'ikut ujian')->get();
+
+        // Siapkan data untuk dikirimkan dalam format JSON
+        $data = $proposals->map(function ($proposal) {
+            return [
+                'id_proposal' => $proposal->id_proposal,
+                'judul' => $proposal->judul,
+                'tanggal_pengajuan' => $proposal->tanggal_pengajuan,
+                'NIM' => $proposal->mahasiswaProposal->nim, // Misalkan 'mahasiswa' relasi dari Proposal
+                'nama_mahasiswa' => $proposal->mahasiswaProposal->nama, // Misalkan 'mahasiswa' relasi dari Proposal
+                'NIP' => $proposal->dosenPembimbing1Proposal->nip, // Misalkan 'dosen_pembimbing_1' relasi dari Proposal
+                'nama_dosen_pembimbing_1' => $proposal->dosenPembimbing1Proposal->nama, // Misalkan 'dosen_pembimbing_1' relasi dari Proposal
+                'status' => $proposal->status,
+                'file_proposal' => $proposal->file_proposal,
+            ];
+        });
+
+        // Mengembalikan response JSON
+        return response()->json([
+            'success' => true,
+            'message' => 'Data proposal ikut ujian berhasil ditemukan.',
+            'data' => $data,
+        ]);
     }
 }

@@ -9,6 +9,8 @@ use App\Http\Controllers\SkripsiController;
 use App\Http\Controllers\ProposalController;
 use App\Http\Controllers\BimbinganController;
 use App\Http\Controllers\MahasiswaController;
+use App\Http\Controllers\SinkronisasiController;
+use App\Models\Dosen;
 
 // Halaman Utama
 Route::get('/', function () {
@@ -39,6 +41,7 @@ Route::middleware(['auth', 'role:dosen'])->group(function () {
     Route::get('/dosen/proposal/detail/{id_proposal}', [ProposalController::class, 'showDetail'])->name('dosen.proposal.detail');
     Route::get('/dosen/proposal/detail/{id_proposal}', [ProposalController::class, 'showDetail'])->name('dosen.proposal.detail');
     Route::post('/dosen/proposal/ujian/{id_proposal}', [ProposalController::class, 'ujianProposal'])->name('dosen.proposal.ujian');
+    Route::post('/proposals/{id}/add-comment', [DosenController::class, 'addComment'])->name('proposals.addComment');
 });
 
 
@@ -78,7 +81,15 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/admin/skripsi/edit/{id}', [SkripsiController::class, 'edit'])->name('admin.skripsi.edit');
     Route::post('/admin/skripsi/update/{id}', [SkripsiController::class, 'editDosenPembimbing'])->name('admin.skripsi.update');
     Route::post('/admin/dosen/{dosenId}/make-admin', [AdminController::class, 'makeAdmin'])->name('dosen.makeAdmin');
+
+    Route::post('/sync-mahasiswa', [SinkronisasiController::class, 'syncMahasiswa'])->name('sync.mahasiswa');
+    Route::post('/sync-dosen', [SinkronisasiController::class, 'syncDosen'])->name('sync.dosen');
+    Route::get('mahasiswa/search', [AdminController::class, 'searchMahasiswa'])->name('mahasiswa.index');
+    Route::get('dosen/search', [AdminController::class, 'searchDosen'])->name('dosen.search');
+    Route::get('skripsi/search', [AdminController::class, 'searchSkripsi'])->name('skripsi.search');
+    Route::get('proposal/search', [AdminController::class, 'searchProposal'])->name('proposal.search');
 });
+
 
 
 
@@ -95,5 +106,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/tasks/{task}', [TaskController::class, 'show'])->name('tasks.show');
     Route::post('/tasks/{task}/edit', [TaskController::class, 'edit'])->name('tasks.edit');
 });
+Route::prefix('api')  // Menambahkan prefix "api"
+    ->middleware('api')  // Menambahkan middleware API
+    ->group(function () {
+        Route::get('/proposals/ujian', [ProposalController::class, 'getAllProposalUjian']);
+    });
 
 require __DIR__ . '/auth.php';

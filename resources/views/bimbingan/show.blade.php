@@ -1,43 +1,53 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-md">
-    <h1 class="text-4xl font-bold mb-6 text-gray-800">Detail Bimbingan</h1>
+<div class="bg-gray-800 text-white p-6 rounded-lg shadow-md">
+    <h1 class="text-2xl font-bold mb-6">Detail Bimbingan</h1>
 
     <!-- Progress Bar -->
     <div class="mb-6">
-        <div class="w-full bg-gray-200 rounded-full h-4 mb-4">
-            <div class="bg-gray-800 h-4 rounded-full" style="width: {{ $progress }}%;"></div>
+        <div class="w-full bg-gray-700 rounded-full h-4 relative">
+            <div class="bg-blue-600 h-4 rounded-full" style="width: {{ $progress }}%;"></div>
+            <span class="absolute inset-0 flex items-center justify-center text-sm font-semibold text-gray-100">{{ number_format($progress, 2) }}%</span>
         </div>
-        <p class="text-gray-800 font-medium">Progress: {{ number_format($progress, 2) }}%</p>
+        <p class="text-sm text-gray-400 mt-2">Progress: {{ number_format($progress, 2) }}%</p>
     </div>
 
     <!-- Daftar Task -->
-    <h2 class="text-3xl font-bold mb-4 text-gray-800">Daftar Task</h2>
+    <h2 class="text-xl font-semibold mb-4">Daftar Task</h2>
     @if ($tasks->isEmpty())
-        <p class="text-gray-600">Belum ada tugas yang ditambahkan.</p>
+        <p class="text-gray-400">Belum ada tugas yang ditambahkan.</p>
     @else
         <ul class="space-y-4">
             @foreach ($tasks as $task)
-            <li class="p-4 bg-gray-100 rounded-lg shadow-sm">
-                <div class="flex justify-between items-center mb-2">
-                    <a href="{{ route('tasks.show', $task->id_task) }}" class="text-xl font-semibold text-gray-800">{{ $task->nama_tugas }}</a>
-                    <span class="text-sm font-medium text-gray-600">{{ ucfirst($task->status) }}</span>
+            <li class="border p-4 rounded-lg shadow-sm bg-gray-700">
+                <div class="flex justify-between items-center">
+                    <a href="{{ route('tasks.show', $task->id_task) }}" class="font-semibold text-blue-400 hover:underline">
+                        {{ $task->nama_tugas }}
+                    </a>
+                    <span class="px-3 py-1 rounded-full text-sm text-white 
+                        {{ $task->status == 'disetujui' ? 'bg-green-500' : ($task->status == 'sedang direvisi' ? 'bg-yellow-500' : 'bg-red-500') }}">
+                        {{ ucfirst($task->status) }}
+                    </span>
                 </div>
-                <p class="text-gray-700 mb-2">{{ $task->deskripsi }}</p>
+                <p class="text-sm text-gray-300 mt-2">{{ $task->deskripsi }}</p>
 
                 <!-- File dan Komentar -->
-                <div class="space-y-2">
+                <div class="mt-3">
                     @if ($task->file_mahasiswa)
-                        <p class="text-gray-600">File Tugas: <a href="{{ asset('storage/' . $task->file_mahasiswa) }}" target="_blank" class="text-blue-500 hover:underline">Lihat</a></p>
+                        <p class="text-sm">File Tugas: 
+                            <a href="{{ asset('storage/' . $task->file_mahasiswa) }}" target="_blank" class="text-blue-400 hover:text-blue-600">Lihat</a>
+                        </p>
                     @endif
 
                     @if ($task->komentar_dosen)
-                        <p class="text-gray-600">Komentar Dosen: <span class="text-gray-800">{{ $task->komentar_dosen }}</span></p>
+                        <p class="text-sm mt-2">Komentar Dosen: <span class="italic text-gray-300">{{ $task->komentar_dosen }}</span></p>
                     @endif
 
                     @if ($task->file_feedback_dosen)
-                        <p class="text-gray-600">Feedback Dosen: <a href="{{ asset('storage/' . $task->file_feedback_dosen) }}" target="_blank" class="text-blue-500 hover:underline">Lihat</a></p>
+                        <p class="text-sm mt-2">Feedback Dosen: 
+                            <a href="{{ asset('storage/' . $task->file_feedback_dosen) }}" target="_blank" class="text-blue-400 hover:text-blue-600">Lihat</a>
+                        </p>
                     @endif
                 </div>
             </li>
@@ -47,25 +57,23 @@
 
     <!-- Form Tambah Task untuk Mahasiswa -->
     @role('mahasiswa')
-    <div class="mt-8 p-6 bg-gray-50 rounded-lg shadow-md">
-        <h2 class="text-2xl font-bold mb-6 text-gray-800">Tambah Task Baru</h2>
-        <form action="{{ route('tasks.store', $bimbingan->id_bimbingan) }}" method="POST" enctype="multipart/form-data" class="space-y-6">
-            @csrf
-            <div class="flex flex-col">
-                <label for="nama_tugas" class="mb-2 font-medium text-gray-700">Nama Tugas</label>
-                <input type="text" id="nama_tugas" name="nama_tugas" required class="border border-gray-300 p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-800">
-            </div>
-            <div class="flex flex-col">
-                <label for="deskripsi" class="mb-2 font-medium text-gray-700">Deskripsi</label>
-                <textarea id="deskripsi" name="deskripsi" required class="border border-gray-300 p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-800"></textarea>
-            </div>
-            <div class="flex flex-col">
-                <label for="file_mahasiswa" class="mb-2 font-medium text-gray-700">Upload File</label>
-                <input type="file" id="file_mahasiswa" name="file_mahasiswa" class="border border-gray-300 p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-800">
-            </div>
-            <button type="submit" class="w-full bg-gray-800 text-white px-4 py-3 rounded-md hover:bg-gray-900 transition duration-300">Tambah Task</button>
-        </form>
-    </div>
+    <h2 class="text-xl font-semibold mt-10">Tambah Task Baru</h2>
+    <form action="{{ route('tasks.store', $bimbingan->id_bimbingan) }}" method="POST" enctype="multipart/form-data" class="mt-4">
+        @csrf
+        <div class="mb-4">
+            <label for="nama_tugas" class="block text-sm font-medium">Nama Tugas</label>
+            <input type="text" id="nama_tugas" name="nama_tugas" class="w-full border-gray-500 bg-gray-700 rounded-md shadow-sm text-gray-300" required>
+        </div>
+        <div class="mb-4">
+            <label for="deskripsi" class="block text-sm font-medium">Deskripsi</label>
+            <textarea id="deskripsi" name="deskripsi" class="w-full border-gray-500 bg-gray-700 rounded-md shadow-sm text-gray-300" required></textarea>
+        </div>
+        <div class="mb-4">
+            <label for="file_mahasiswa" class="block text-sm font-medium">Upload File</label>
+            <input type="file" id="file_mahasiswa" name="file_mahasiswa" class="w-full border-gray-500 bg-gray-700 rounded-md shadow-sm text-gray-300">
+        </div>
+        <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded-md shadow hover:bg-green-800">Tambah Task</button>
+    </form>
     @endrole
 </div>
 @endsection
