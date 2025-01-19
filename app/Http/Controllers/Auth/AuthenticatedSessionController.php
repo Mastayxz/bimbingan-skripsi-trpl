@@ -45,7 +45,7 @@ class AuthenticatedSessionController extends Controller
             if (!$user) {
                 $user = User::create([
                     'name' => $entity->nama,
-                    'email' => $entity->email ?? $entity->identifier . '@example.com',
+                    'email' => $entity->email ?? strtolower($entity->nama) . '@gmail.com',
                     'password' => bcrypt($credentials['password']),
                     'mahasiswa_id' => $entity instanceof Mahasiswa ? $entity->id : null,
                     'dosen_id' => $entity instanceof Dosen ? $entity->id : null,
