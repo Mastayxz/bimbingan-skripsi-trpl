@@ -37,22 +37,30 @@ class SyncMahasiswa extends Command
         foreach ($dataMahasiswa as $mahasiswa) {
             // Hanya sinkronkan jika jurusan adalah "Teknologi Informasi" atau "TI"
             if (in_array($mahasiswa['jurusan'], ['Teknologi Informasi'])) {
+                $existingMahasiswa = Mahasiswa::where('nim', $mahasiswa['nim'])->first();
+                // Log::info('Tahun Masuk untuk NIM ' . $mahasiswa['nim'] . ': ' . '20' . substr($mahasiswa['nim'], 0, 2)); // Debug tahun masuk
                 Mahasiswa::updateOrCreate(
                     ['nim' => $mahasiswa['nim']],
                     [
-                        'tahunAkademik' => $mahasiswa['tahunAkademik'],
+                        'tahun_masuk' => '20' . substr($mahasiswa['nim'], 0, 2),
                         'nama' => $mahasiswa['nama'],
                         'jurusan' => $mahasiswa['jurusan'],
                         'prodi' => $mahasiswa['prodi'],
-                        'password' => bcrypt('password'),
-                        'email' => $mahasiswa['email'],
-                        'telepon' => $mahasiswa['telepon'],
+                        'password' => $existingMahasiswa && !password_verify('password', $existingMahasiswa->password)
+                            ? $existingMahasiswa->password
+                            : bcrypt('password'),
+                        'email' => $existingMahasiswa && $existingMahasiswa->email
+                            ? $existingMahasiswa->email
+                            : $mahasiswa['email'],
+                        'telepon' => $existingMahasiswa && $existingMahasiswa->telepon
+                            ? $existingMahasiswa->telepon
+                            : $mahasiswa['telepon'],
                         'jenjang' => $mahasiswa['jenjang'],
                         'created_at' => now(),
                         'updated_at' => now(),
                     ]
                 );
-                $this->info("Sinkronisasi berhasil untuk mahasiswa dengan NIM: {$mahasiswa['nim']}"); // Memberikan feedback di terminal setelah setiap mahasiswa disinkronkan
+                $this->info('Tahun Masuk untuk NIM ' . $mahasiswa['nim'] . ': ' . '20' . substr($mahasiswa['nim'], 0, 2)); // Memberikan feedback di terminal setelah setiap mahasiswa disinkronkan
             }
         }
 

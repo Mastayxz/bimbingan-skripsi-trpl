@@ -23,7 +23,8 @@ class Mahasiswa extends Model
         'password',
         'prodi',
         'telepon',
-        'jenjang'
+        'jenjang',
+        'tahun_masuk',
     ];
     //
     //

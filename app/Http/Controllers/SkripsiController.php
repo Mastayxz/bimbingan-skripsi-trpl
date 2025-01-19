@@ -42,6 +42,21 @@ class SkripsiController extends Controller
 
         return redirect()->route('admin.skripsi.index', $skripsi)->with('success', 'Dosen pembimbing berhasil diperbarui.');
     }
+    public function editDosenPembimbing1(Request $request, Skripsi $skripsi, $id)
+    {
+        $skripsi = Skripsi::findOrFail($id);
+        // Validasi input
+        $request->validate([
+            'dosen_pembimbing_1' => 'required|exists:dosens,id',
+        ]);
+
+        // Update dosen pembimbing 1 skripsi
+        $skripsi->update([
+            'dosen_pembimbing_1' => $request->dosen_pembimbing_1,
+        ]);
+
+        return redirect()->route('admin.skripsi.index', $skripsi)->with('success', 'Dosen pembimbing 1 berhasil diperbarui.');
+    }
 
 
     public function store(Request $request)

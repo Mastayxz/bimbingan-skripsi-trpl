@@ -21,6 +21,7 @@ class ProposalSkripsi extends Model
         'id_dosen_pembimbing_1',
         'status',
         'komentar',
+        'tipe_proposal'
     ];
     //
     public function skripsi()

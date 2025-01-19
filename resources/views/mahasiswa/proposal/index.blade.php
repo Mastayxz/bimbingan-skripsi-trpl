@@ -1,8 +1,8 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="container mx-auto px-4 py-6">
-        <h1 class="text-3xl font-semibold mb-6 dark:text-white  ">Daftar Proposal yang Diajukan</h1>
+    <div class="container mx-auto px-4">
+        <h1 class="text-3xl font-semibold mb-6 dark:text-white">Daftar Proposal yang Anda Ajukan</h1>
 
         <!-- Pesan sukses -->
         @if (session('success'))
@@ -30,15 +30,14 @@
                     @foreach ($proposals as $index => $proposal)
                         <tr
                             class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                            <td class="px-6 py-4 text-center whitespace-nowrap">{{ $loop->iteration }}</td>
+                            <td class="px-6 py-4 text-center">{{ $loop->iteration }}</td>
                             <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                 {{ $proposal->judul }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap">{{ $proposal->mahasiswaProposal->nim }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap">{{ $proposal->mahasiswaProposal->nama }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap">{{ $proposal->dosenPembimbing1Proposal->nama }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap">{{ $proposal->dosenPembimbing1Proposal->nip }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap"><a
-                                    href="{{ route('proposal.detail', $proposal->id_proposal) }}"
+                            <td class="px-6 py-4">{{ $proposal->mahasiswaProposal->nim }}</td>
+                            <td class="px-6 py-4">{{ $proposal->mahasiswaProposal->nama }}</td>
+                            <td class="px-6 py-4">{{ $proposal->dosenPembimbing1Proposal->nama }}</td>
+                            <td class="px-6 py-4">{{ $proposal->dosenPembimbing1Proposal->nip }}</td>
+                            <td class="px-6 py-4"><a href="{{ route('proposal.detail', $proposal->id_proposal) }}"
                                     class="inline-block py-2 px-4 bg-blue-500 text-white text-sm rounded-full hover:bg-blue-600">
                                     Detail
                                 </a>
@@ -59,10 +58,10 @@
                 </tbody>
             </table>
         </div>
+    </div>
 
-        {{-- <!-- Pagination -->
+    {{-- <!-- Pagination -->
     {{-- <div class="mt-6">
         {{ $proposals->links('pagination::tailwind') }}
     </div> --}}
-    </div>
 @endsection

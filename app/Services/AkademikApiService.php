@@ -15,7 +15,7 @@ class AkademikApiService
         $this->hashKey = config('akademik_api.hash_key');
     }
 
-    public function getMahasiswa($tahunAkademik, $jurusan = '40', $prodi = '58302')
+    public function getMahasiswa($tahunAkademik, $jurusan = '', $prodi = '58302')
     {
         $params = [
             'TahunAkademik' => $tahunAkademik,

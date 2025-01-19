@@ -36,6 +36,7 @@ class SyncDosenJob implements ShouldQueue
                 ['nip' => $dosen['nip']],
                 [
                     'nama' => $dosen['nama'],
+                    'email' => strtolower(str_replace(' ', '.', $dosen['nama'])) . '@gmail.com',
                     'nidn' => $dosen['nidn'],
                     'jurusan' => $dosen['jurusan'],
                     'prodi' => $dosen['prodi'],
