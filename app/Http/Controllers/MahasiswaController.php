@@ -54,4 +54,22 @@ class MahasiswaController extends Controller
         // Kirim data skripsi dan progress ke view
         return view('dashboard.mahasiswa', compact('skripsi', 'progress', 'proposals', 'bimbingans'));
     }
+
+    public function listProposal()
+    {
+        // Ambil data user yang sedang login
+        $user = Auth::user()->mahasiswa;
+
+        // Ambil skripsi yang terkait dengan mahasiswa yang sedang login
+        $skripsi = Skripsi::where('mahasiswa', $user->id)->get();
+        // Query untuk mendapatkan daftar skripsi
+        $proposals = ProposalSkripsi::whereIn('status', ['diajukan', 'disetujui', 'ditolak', 'ikut ujian'])
+            ->where(function ($query) use ($user) {
+                $query->where('id_mahasiswa', $user->id);
+            }) // Ambil 5 skripsi terbaru
+            ->get();
+
+        // Kirim data skripsi dan progress ke view
+        return view('mahasiswa.proposal.index', compact('proposals'));
+    }
 }

@@ -2,6 +2,16 @@
     <!-- Session Status -->
     <x-auth-session-status class="mb-4" :status="session('status')" />
 
+    <!-- Menampilkan pesan kesalahan umum (jika ada) -->
+    {{-- @if ($errors->any())
+        <div class="mb-4 text-sm text-red-600">
+            @foreach ($errors->all() as $error)
+                <p>{{ $error }}</p>
+            @endforeach
+        </div>
+    @endif --}}
+
+    <!-- Form Login -->
     <form method="POST" action="{{ route('login') }}">
         @csrf
 
@@ -39,4 +49,30 @@
             </x-primary-button>
         </div>
     </form>
+
+    <!-- Menampilkan countdown jika waktu lockout ada -->
+    @if(session('lockout_time'))
+        <div id="lockout-message" class="mt-4 text-sm text-red-600">
+            <p>{{ __('Too many login attempts. Please try again in :seconds seconds.', ['seconds' => session('lockout_time')]) }}</p>
+            <p id="countdown-timer"></p>
+        </div>
+
+        <script>
+            let countdownTime = {{ session('lockout_time') }};
+            const countdownElement = document.getElementById('countdown-timer');
+
+            function updateCountdown() {
+                if (countdownTime > 0) {
+                    countdownElement.innerHTML = `Remaining time: ${countdownTime} seconds`;
+                    countdownTime--;
+                } else {
+                    countdownElement.innerHTML = "You can try logging in again now.";
+                    clearInterval(countdownInterval); // Hentikan interval saat countdown selesai
+                }
+            }
+
+            // Update setiap detik
+            const countdownInterval = setInterval(updateCountdown, 1000);
+        </script>
+    @endif
 </x-guest-layout>

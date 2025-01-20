@@ -139,4 +139,34 @@ class DosenController extends Controller
 
         return view('dosen.proposal.index', compact('proposals'));
     }
+
+    public function searchSkripsi(Request $request)
+    {
+        $keyword = $request->input('keyword');
+
+        // Mencari skripsi berdasarkan NIM mahasiswa atau NIP dosen pembimbing 1 atau 2
+        $skripsi = Skripsi::whereHas('mahasiswaSkripsi', function ($query) use ($keyword) {
+            $query->where('nim', 'like', "%{$keyword}%");
+        })->orWhereHas('dosenPembimbing1', function ($query) use ($keyword) {
+            $query->where('nip', 'like', "%{$keyword}%");
+        })->orWhereHas('dosenPembimbing2', function ($query) use ($keyword) {
+            $query->where('nip', 'like', "%{$keyword}%");
+        })->paginate(25);
+
+        return view('dosen.skripsi.index', compact('skripsi', 'keyword'));
+    }
+
+    public function searchProposal(Request $request)
+    {
+        $keyword = $request->input('keyword');
+
+        // Mencari proposal berdasarkan NIM mahasiswa atau NIP dosen pembimbing 1
+        $proposal = ProposalSkripsi::whereHas('mahasiswaProposal', function ($query) use ($keyword) {
+            $query->where('nim', 'like', "%{$keyword}%");
+        })->orWhereHas('dosenPembimbing1Proposal', function ($query) use ($keyword) {
+            $query->where('nip', 'like', "%{$keyword}%");
+        })->paginate(25);
+
+        return view('dosen.proposal.index', compact('proposal', 'keyword'));
+    }
 }

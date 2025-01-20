@@ -9,6 +9,15 @@
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
+    <script>
+        // On page load or when changing themes, best to add inline in `head` to avoid FOUC
+        if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia(
+                '(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark')
+        }
+    </script>
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
@@ -16,49 +25,171 @@
 <body class="bg-gray-50 text-gray-800 font-sans">
 
     <!-- Navbar -->
-    <header class="bg-white shadow sticky top-0 z-50">
-        <div class="container mx-auto px-6 py-4 flex items-center justify-between">
-            <!-- Logo dan Nama Sistem -->
-            <div class="flex items-center space-x-3">
-                <img src="{{ asset('images/logo.png') }}" alt="Logo Sistem" class="w-12 h-12">
-                <span class="text-xl font-semibold text-gray-700">Sistem Bimbingan Skripsi PNB</span>
-            </div>
-            <!-- Login & Register or User Profile -->
-            <div class="flex items-center space-x-4">
-                @guest
-                    <a href="{{ route('login') }}" class="text-gray-700 hover:text-gray-900 font-medium">Login</a>
-                    <a href="{{ route('register') }}" class="text-white bg-blue-600 hover:bg-blue-700 font-medium py-2 px-4 rounded">
-                        Register
-                    </a>
-                @else
-                    <div class="relative">
-                        <button class="flex items-center text-gray-700 hover:text-gray-900 font-medium focus:outline-none">
-                            {{ Auth::user()->name }}
-                            <svg class="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                            </svg>
+    <!-- Navbar -->
+    <nav class="bg-white border-gray-200 dark:bg-gray-900 dark:border-gray-700 shadow-lg">
+        <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
+            <a href="#" class="flex items-center space-x-3 rtl:space-x-reverse">
+                <img src="{{ asset('images/logo.png') }}" class="h-8" alt="Logo Sistem" />
+                <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">SIBIMOLI TRPL</span>
+            </a>
+            <button data-collapse-toggle="navbar-multi-level" type="button"
+                class="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
+                aria-controls="navbar-multi-level" aria-expanded="false">
+                <span class="sr-only">Open main menu</span>
+                <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+                    viewBox="0 0 17 14">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M1 1h15M1 7h15M1 13h15" />
+                </svg>
+            </button>
+            <div class="hidden w-full md:block md:w-auto" id="navbar-multi-level">
+                <ul
+                    class="flex flex-col font-medium p-4 md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
+                    @guest
+                        <li>
+                            <a href="{{ route('login') }}"
+                                class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">Login</a>
+                        </li>
+                        <li>
+                            <a href="{{ route('register') }}"
+                                class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">Register</a>
+                        </li>
+                    @else
+                        <li>
+                            <button id="dropdownNavbarLink" data-dropdown-toggle="dropdownNavbar"
+                                class="flex items-center justify-between w-full py-2 px-3 text-gray-900 hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 md:w-auto dark:text-white md:dark:hover:text-blue-500 dark:focus:text-white dark:hover:bg-gray-700 md:dark:hover:bg-transparent">
+                                {{ Auth::user()->name }} <svg class="w-2.5 h-2.5 ms-2.5" aria-hidden="true"
+                                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                        stroke-width="2" d="m1 1 4 4 4-4" />
+                                </svg>
+                            </button>
+                            <!-- Dropdown menu -->
+                            <div id="dropdownNavbar"
+                                class="z-10 hidden font-normal bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 dark:divide-gray-600">
+                                <ul class="py-2 text-sm text-gray-700 dark:text-gray-200"
+                                    aria-labelledby="dropdownLargeButton">
+                                    @role('admin')
+                                        <li>
+                                            <a href="{{ route('dashboard.admin') }}"
+                                                class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Dashboard</a>
+                                        </li>
+                                    @endrole
+                                    @role('mahasiswa')
+                                        <li>
+                                            <a href="{{ route('dashboard.mahasiswa') }}"
+                                                class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Dashboard</a>
+                                        </li>
+                                    @endrole
+                                    @role('dosen')
+                                        <li>
+                                            <a href="{{ route('dashboard.dosen') }}"
+                                                class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Dashboard</a>
+                                        </li>
+                                    @endrole
+                                </ul>
+                                <div class="py-1">
+                                    <form method="POST" action="{{ route('logout') }}">
+                                        @csrf
+                                        <button type="submit"
+                                            class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Logout</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </li>
+                    @endguest
+                    <li>
+                        <button id="theme-toggle"
+                            class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">
+                            <i id="theme-toggle-icon" class="fas fa-moon"></i>
                         </button>
-                        <div class="absolute right-0 mt-2 w-48 bg-white border rounded shadow-lg hidden group-hover:block">
-                            <a href="{{ route('dashboard') }}" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Dashboard</a>
-                            <form method="POST" action="{{ route('logout') }}">
-                                @csrf
-                                <button type="submit" class="block w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-100">Logout</button>
-                            </form>
-                        </div>
-                    </div>
-                @endguest
+                    </li>
+                </ul>
             </div>
         </div>
-    </header>
-
+    </nav>
     <!-- Hero Section -->
-    <section class="bg-blue-600 text-white py-20">
-        <div class="container mx-auto px-6 text-center">
-            <h1 class="text-4xl font-bold mb-4">Selamat Datang di Sistem Bimbingan Skripsi PNB</h1>
-            <p class="text-lg mb-8">Platform terbaik untuk membantu Anda dalam menyelesaikan skripsi dengan bimbingan yang optimal.</p>
-            <a href="{{ route('register') }}" class="bg-white text-blue-600 font-medium py-2 px-4 rounded hover:bg-gray-100">Daftar Sekarang</a>
+    <section class="bg-white dark:bg-gray-900">
+        <div class="py-8 px-4 mx-auto max-w-screen-xl text-center lg:py-16">
+            <h1
+                class="mb-4 text-4xl font-extrabold tracking-tight leading-none text-gray-900 md:text-5xl lg:text-6xl dark:text-white">
+                SIBIMOLI TRPL - Mendampingi Langkah Anda Menuju Kelulusan</h1>
+            <p class="mb-8 text-lg font-normal text-gray-500 lg:text-xl sm:px-16 lg:px-48 dark:text-gray-400">Di
+                SIBIMOLI TRPL, kami hadir untuk memudahkan proses bimbingan skripsi Anda. Dengan teknologi yang
+                inovatif, kami membantu Anda merancang, mengelola, dan menyelesaikan skripsi secara efisien, hingga
+                mencapai kesuksesan akademik..</p>
+            <div class="flex flex-col space-y-4 sm:flex-row sm:justify-center sm:space-y-0">
+                <a href="#"
+                    class="inline-flex justify-center items-center py-3 px-5 text-base font-medium text-center text-white rounded-lg bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-900">
+                    Mulai
+                    <svg class="w-3.5 h-3.5 ms-2 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                        fill="none" viewBox="0 0 14 10">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M1 5h12m0 0L9 1m4 4L9 9" />
+                    </svg>
+                </a>
+                <a href="#"
+                    class="py-3 px-5 sm:ms-4 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
+                    Pelajari lebih lanjut
+                </a>
+            </div>
         </div>
     </section>
+
+    <!-- Hero and Carousel Section -->
+    <section class="py-10">
+        <div class="w-full h-full">
+            <div id="animation-carousel" class="relative w-full" data-carousel="static">
+                <!-- Carousel wrapper -->
+                <div class="relative h-[600px] overflow-hidden md:h-[700px]">
+                    <!-- Item 1 -->
+                    <div class="hidden duration-200 ease-linear" data-carousel-item>
+                        <img src="{{ asset('images/foto_login.jpg') }}"
+                            class="absolute block w-full h-full object-cover" alt="...">
+                    </div>
+                    <!-- Item 2 -->
+                    <div class="hidden duration-200 ease-linear" data-carousel-item>
+                        <img src="{{ asset('images/foto_login.jpg') }}"
+                            class="absolute block w-full h-full object-cover" alt="...">
+                    </div>
+                    <!-- Item 3 -->
+                    <div class="hidden duration-200 ease-linear" data-carousel-item="active">
+                        <img src="{{ asset('images/foto_login.jpg') }}"
+                            class="absolute block w-full h-full object-cover" alt="...">
+                    </div>
+                </div>
+                <!-- Slider controls -->
+                <button type="button"
+                    class="absolute top-0 start-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none"
+                    data-carousel-prev>
+                    <span
+                        class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/30 dark:bg-gray-800/30 group-hover:bg-white/50 dark:group-hover:bg-gray-800/60 group-focus:ring-4 group-focus:ring-white dark:group-focus:ring-gray-800/70 group-focus:outline-none">
+                        <svg class="w-4 h-4 text-white dark:text-gray-800 rtl:rotate-180" aria-hidden="true"
+                            xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                stroke-width="2" d="M5 1 1 5l4 4" />
+                        </svg>
+                        <span class="sr-only">Previous</span>
+                    </span>
+                </button>
+                <button type="button"
+                    class="absolute top-0 end-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none"
+                    data-carousel-next>
+                    <span
+                        class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/30 dark:bg-gray-800/30 group-hover:bg-white/50 dark:group-hover:bg-gray-800/60 group-focus:ring-4 group-focus:ring-white dark:group-focus:ring-gray-800/70 group-focus:outline-none">
+                        <svg class="w-4 h-4 text-white dark:text-gray-800 rtl:rotate-180" aria-hidden="true"
+                            xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                stroke-width="2" d="m1 9 4-4-4-4" />
+                        </svg>
+                        <span class="sr-only">Next</span>
+                    </span>
+                </button>
+            </div>
+        </div>
+    </section>
+
+
 
     <!-- Features Section -->
     <section class="py-20">
@@ -72,7 +203,8 @@
                     <div class="bg-white p-6 rounded shadow">
                         <i class="fas fa-chalkboard-teacher text-blue-600 text-4xl mb-4"></i>
                         <h3 class="text-xl font-semibold mb-2">Bimbingan Online</h3>
-                        <p class="text-gray-600">Dapatkan bimbingan secara online dari dosen pembimbing Anda kapan saja dan di mana saja.</p>
+                        <p class="text-gray-600">Dapatkan bimbingan secara online dari dosen pembimbing Anda kapan saja
+                            dan di mana saja.</p>
                     </div>
                 </div>
                 <div class="w-full md:w-1/3 px-4 mb-8">
@@ -93,14 +225,6 @@
         </div>
     </section>
 
-    <!-- Call to Action Section -->
-    <section class="bg-gray-100 py-20">
-        <div class="container mx-auto px-6 text-center">
-            <h2 class="text-3xl font-bold mb-4">Siap untuk memulai?</h2>
-            <p class="text-gray-600 mb-8">Bergabunglah dengan kami dan mulai perjalanan skripsi Anda dengan bimbingan terbaik.</p>
-            <a href="{{ route('register') }}" class="bg-blue-600 text-white font-medium py-2 px-4 rounded hover:bg-blue-700">Daftar Sekarang</a>
-        </div>
-    </section>
 
 </body>
 

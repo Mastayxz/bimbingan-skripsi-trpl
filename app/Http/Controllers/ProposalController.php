@@ -29,6 +29,7 @@ class ProposalController extends Controller
         if ($existingProposal) {
             return redirect()->route('proposal.create')->with('error', 'Anda sudah memiliki proposal yang disetujui dan tidak dapat mendaftar lagi.');
         }
+        // dd($existingProposal);
 
         // Validasi input
         $request->validate([
@@ -37,6 +38,7 @@ class ProposalController extends Controller
             'deskripsi' => 'required|string|max:1000',
             'file_proposal' => 'required|string|max:1000', // Hanya menerima file PDF maksimal 2MB
             'dosen_pembimbing_1' => 'required|exists:dosens,id',
+            'tipe_proposal' => 'required|string|in:analisis,produk',
         ]);
 
         // Upload file proposal
@@ -50,6 +52,7 @@ class ProposalController extends Controller
             'tanggal_pengajuan' => $request->tanggal_pengajuan,
             'file_proposal' => $request->file_proposal,
             'id_dosen_pembimbing_1' => $request->dosen_pembimbing_1,
+            'tipe_proposal' => $request->tipe_proposal,
             'status' => 'diajukan', // Set status default sebagai menunggu
         ]);
 
@@ -59,7 +62,8 @@ class ProposalController extends Controller
     public function showDetail($id_proposal)
     {
         $proposal = ProposalSkripsi::with('mahasiswaProposal', 'dosenPembimbing1Proposal')->findOrFail($id_proposal);
-
+        // Pecah komentar menjadi array
+        $proposal->listKomentar = $proposal->komentar ? explode('|', $proposal->komentar) : [];
         return view('dosen.proposal.detail', compact('proposal'));
     }
     public function ujianProposal($id_proposal)
@@ -140,5 +144,77 @@ class ProposalController extends Controller
             'message' => 'Data proposal ikut ujian berhasil ditemukan.',
             'data' => $data,
         ]);
+    }
+
+    public function edit($id)
+    {
+        $proposal = ProposalSkripsi::findOrFail($id);
+        $mahasiswa = Auth::user()->mahasiswa->id;
+        if ($mahasiswa !== $proposal->id_mahasiswa) {
+            abort(403, 'Unauthorized');
+        }
+
+        return view('mahasiswa.proposal.edit', compact('proposal'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $proposal = ProposalSkripsi::findOrFail($id);
+        $mahasiswa = Auth::user()->mahasiswa->id;
+        if ($mahasiswa !== $proposal->id_mahasiswa) {
+            abort(403, 'Unauthorized');
+        }
+
+        // Validasi input
+        $request->validate([
+            'judul' => 'required|string|max:255',
+            'deskripsi' => 'required|string',
+            'file_proposal' => 'required|string|max:1000',
+        ]);
+
+        // Update data
+        $proposal->judul = $request->judul;
+        $proposal->deskripsi = $request->deskripsi;
+        $proposal->file_proposal = $request->file_proposal;
+
+
+
+        // Periksa status proposal
+        if ($proposal->status === 'disetujui') {
+            $proposal->status = 'revisi'; // Ubah ke revisi jika sudah disetujui
+        } else {
+            $proposal->status = 'diajukan'; // Tetap diajukan jika belum disetujui
+        }
+        $proposal->save();
+
+        return redirect()->route('proposal.detail', $proposal->id_proposal)->with('success', 'Proposal berhasil direvisi.');
+    }
+
+    public function setRevisi(Request $request, $id)
+    {
+        $proposal = ProposalSkripsi::findOrFail($id);
+        $dosen = Auth::user()->dosen->id;
+        // Validasi hanya dosen yang bisa memberikan revisi
+        if ($dosen !== $proposal->id_dosen_pembimbing_1) {
+            abort(403, 'Unauthorized');
+        }
+        $request->validate([
+            'komentar' => 'required|string|max:255',
+        ]);
+
+        // Tambahkan komentar baru ke riwayat komentar
+        $newComment = $request->komentar;
+        $existingComments = $proposal->komentar ? $proposal->komentar . '|' : '';
+        $proposal->komentar = $existingComments . $newComment;
+
+        // Ubah status ke "revisi" jika belum
+        if ($proposal->status === 'disetujui') {
+            $proposal->status = 'revisi';
+        }
+
+
+        $proposal->save();
+
+        return redirect()->back()->with('success', 'Proposal berhasil diberikan status revisi.');
     }
 }

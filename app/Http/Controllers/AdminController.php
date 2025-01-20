@@ -40,7 +40,7 @@ class AdminController extends Controller
     {
 
         // Mengambil data mahasiswa dengan pagination, 10 mahasiswa per halaman
-        $mahasiswa = Mahasiswa::paginate(25);
+        $mahasiswa = Mahasiswa::paginate(10);
 
         return view('admin.mahasiswa.index', compact('mahasiswa'));
     }
@@ -125,6 +125,14 @@ class AdminController extends Controller
 
         // Mengirim data ke view
         return view('admin.proposal.index', compact('proposal'));
+    }
+    public function listBimbingan()
+    {
+        // Mengambil data bimbingan beserta relasi skripsi, mahasiswa, dan dosen pembimbing 1 dan 2
+        $bimbingan = Bimbingan::with(['skripsi', 'mahasiswaBimbingan', 'dosenPembimbing1', 'dosenPembimbing2'])->paginate(10);
+
+        // Mengirim data ke view
+        return view('admin.bimbingan.index', compact('bimbingan'));
     }
 
 

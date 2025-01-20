@@ -48,4 +48,9 @@ class Bimbingan extends Model
     {
         return $this->hasMany(Task::class, 'bimbingan_id');
     }
+
+    public function penilaian()
+    {
+        return $this->hasMany(PenilaianBimbingan::class, 'bimbingan_id', 'id_bimbingan');
+    }
 }

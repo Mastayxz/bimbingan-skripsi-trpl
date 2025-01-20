@@ -15,9 +15,10 @@ class Task extends Model
         'nama_tugas',
         'deskripsi',
         'status',
-        'file_mahasiswa',
+        'link_document',
         'komentar_dosen',
-        'revisi', // Tambahkan kolom ini
+        'revisi',
+        // Tambahkan kolom ini
     ];
 
     protected $casts = [
@@ -28,5 +29,15 @@ class Task extends Model
     public function bimbingan()
     {
         return $this->belongsTo(Bimbingan::class, 'bimbingan_id', 'id_bimbingan');
+    }
+
+    public function dospem1()
+    {
+        return $this->belongsTo(Dosen::class, 'dospem1_id', 'id_dosen');
+    }
+
+    public function dospem2()
+    {
+        return $this->belongsTo(Dosen::class, 'dospem2_id', 'id_dosen');
     }
 }

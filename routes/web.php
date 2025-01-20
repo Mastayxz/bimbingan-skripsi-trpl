@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Dosen;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\AdminController;
@@ -9,8 +10,8 @@ use App\Http\Controllers\SkripsiController;
 use App\Http\Controllers\ProposalController;
 use App\Http\Controllers\BimbinganController;
 use App\Http\Controllers\MahasiswaController;
+use App\Http\Controllers\PenilaianController;
 use App\Http\Controllers\SinkronisasiController;
-use App\Models\Dosen;
 
 // Halaman Utama
 Route::get('/', function () {
@@ -39,9 +40,14 @@ Route::middleware(['auth', 'role:dosen'])->group(function () {
     Route::put('/dosen/proposal/approve/{id_proposal}', [DosenController::class, 'approveProposal'])->name('dosen.proposal.approve');
     Route::put('/dosen/proposal/reject/{id_proposal}', [DosenController::class, 'rejectProposal'])->name('dosen.proposal.reject');
     Route::get('/dosen/proposal/detail/{id_proposal}', [ProposalController::class, 'showDetail'])->name('dosen.proposal.detail');
-    Route::get('/dosen/proposal/detail/{id_proposal}', [ProposalController::class, 'showDetail'])->name('dosen.proposal.detail');
     Route::post('/dosen/proposal/ujian/{id_proposal}', [ProposalController::class, 'ujianProposal'])->name('dosen.proposal.ujian');
+    Route::put('/dosen/proposal/{id}/revisi', [ProposalController::class, 'setRevisi'])->name('dosen.proposal.revisi');
     Route::post('/proposals/{id}/add-comment', [DosenController::class, 'addComment'])->name('proposals.addComment');
+    Route::put('/tasks/{taskId}/acc/{dosenId}', [TaskController::class, 'accTask'])->name('tasks.acc');
+    Route::put('/tasks/{taskId}/revisi/{dosenId}', [TaskController::class, 'revisiTask'])->name('tasks.revisi');
+    Route::get('/penilaian/create-from-bimbingan/{id}', [PenilaianController::class, 'createFromBimbingan'])->name('penilaian.createFromBimbingan');
+
+    Route::post('bimbingan/{id_bimbingan}/setStatusSelesai/{pembimbing}', [BimbinganController::class, 'setStatusSelesaiPembimbing'])->name('bimbingan.setStatusSelesai');
 });
 
 
@@ -52,7 +58,13 @@ Route::middleware(['auth', 'role:mahasiswa'])->group(function () {
     Route::get('/mahasiswa/skripsi', [SkripsiController::class, 'index'])->name('skripsi.create');
     Route::post('/mahasiswa/skripsi', [SkripsiController::class, 'store'])->name('skripsi.store');
     Route::get('/proposal/create', [ProposalController::class, 'create'])->name('proposal.create');
+    Route::get('/tasks/{taskId}/edit', [TaskController::class, 'edit'])->name('tasks.edit');
     Route::post('/proposal', [ProposalController::class, 'store'])->name('proposal.store');
+    Route::get('/daftarproposal', [MahasiswaController::class, 'listProposal'])->name('proposal.index');
+    Route::put('/tasks/{taskId}/update', [TaskController::class, 'update'])->name('tasks.update');
+    Route::post('/tasks/{bimbinganId}', [TaskController::class, 'store'])->name('tasks.store');
+    Route::get('/proposal/{id}/edit', [ProposalController::class, 'edit'])->name('proposals.edit');
+    Route::put('/proposal/{id}', [ProposalController::class, 'update'])->name('proposals.update');
 });
 
 // Rute untuk Admin
@@ -61,7 +73,8 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/admin/mahasiswa', [AdminController::class, 'listMahasiswa'])->name('admin.mahasiswa');
     Route::get('/admin/dosen', [AdminController::class, 'listDosen'])->name('admin.dosen');
     Route::get('/admin/skripsi', [AdminController::class, 'listSkripsi'])->name('admin.skripsi.index');
-    Route::get('/admin/proposal', [AdminController::class, 'listProposal'])->name('admin.Proposal.index');
+    Route::get('/admin/proposal', [AdminController::class, 'listProposal'])->name('admin.proposal.index');
+    Route::get('/admin/bimbingan', [AdminController::class, 'listBimbingan'])->name('admin.bimbingan.index');
 
     // create bimbingan dari skripsi lulus ujian
     Route::get('/admin/skripsi/approve/{id_skripsi}', [AdminController::class, 'approveSkripsi'])->name('admin.skripsi.approve');
@@ -84,7 +97,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 
     Route::post('/sync-mahasiswa', [SinkronisasiController::class, 'syncMahasiswa'])->name('sync.mahasiswa');
     Route::post('/sync-dosen', [SinkronisasiController::class, 'syncDosen'])->name('sync.dosen');
-    Route::get('mahasiswa/search', [AdminController::class, 'searchMahasiswa'])->name('mahasiswa.index');
+    Route::get('mahasiswa/search', [AdminController::class, 'searchMahasiswa'])->name('mahasiswa.search');
     Route::get('dosen/search', [AdminController::class, 'searchDosen'])->name('dosen.search');
     Route::get('skripsi/search', [AdminController::class, 'searchSkripsi'])->name('skripsi.search');
     Route::get('proposal/search', [AdminController::class, 'searchProposal'])->name('proposal.search');
@@ -95,16 +108,13 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 
 
 Route::middleware('auth')->group(function () {
-    // Mahasiswa membuat task
-    Route::post('/tasks/{bimbinganId}', [TaskController::class, 'store'])->name('tasks.store');
 
-    // Dosen memberikan feedback
-    Route::put('/tasks/{taskId}', [TaskController::class, 'update'])->name('tasks.update');
     Route::get('/bimbingan', [BimbinganController::class, 'index'])->name('bimbingan.index');
     Route::get('/bimbingan/{bimbingan_id}', [BimbinganController::class, 'show'])->name('bimbingans.show');
-    // routes/web.php
-    Route::get('/tasks/{task}', [TaskController::class, 'show'])->name('tasks.show');
-    Route::post('/tasks/{task}/edit', [TaskController::class, 'edit'])->name('tasks.edit');
+    Route::get('/tasks/create/{bimbinganId}', [TaskController::class, 'create'])->name('tasks.create');
+    Route::post('/tasks/store/{bimbinganId}', [TaskController::class, 'store'])->name('tasks.store');
+    Route::get('/tasks/{taskId}', [TaskController::class, 'show'])->name('tasks.show');
+    Route::get('/dosen/proposal/detail/{id_proposal}', [ProposalController::class, 'showDetail'])->name('proposal.detail');
 });
 Route::prefix('api')  // Menambahkan prefix "api"
     ->middleware('api')  // Menambahkan middleware API

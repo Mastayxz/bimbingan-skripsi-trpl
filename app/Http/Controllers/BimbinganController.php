@@ -54,7 +54,7 @@ class BimbinganController extends Controller
         }
 
         // Hitung progress berdasarkan task yang selesai
-        $completedTasks = $tasks->where('status', 'disetujui')->count();
+        $completedTasks = $tasks->where('status', 'selesai')->count();
         $totalTasks = $tasks->count();
         $progress = $totalTasks > 0 ? ($completedTasks / $totalTasks) * 100 : 0;
 
@@ -74,5 +74,34 @@ class BimbinganController extends Controller
         // dd($bimbingans);
 
         return view('bimbingan.index', compact('bimbingans'));
+    }
+
+    public function setStatusSelesaiPembimbing($id_bimbingan, $pembimbing)
+    {
+        $bimbingan = Bimbingan::findOrFail($id_bimbingan);
+
+        // Cek pembimbing mana yang mengubah status
+        if ($pembimbing == 1) {
+            if (Auth::user()->dosen->id == $bimbingan->dosen_pembimbing_1) {
+                $bimbingan->status_pembimbing_1 = 'selesai';
+            } else {
+                abort(403, 'Unauthorized');
+            }
+        } elseif ($pembimbing == 2) {
+            if (Auth::user()->dosen->id == $bimbingan->dosen_pembimbing_2) {
+                $bimbingan->status_pembimbing_2 = 'selesai';
+            } else {
+                abort(403, 'Unauthorized');
+            }
+        }
+
+        // Cek jika kedua pembimbing sudah selesai, ubah status bimbingan menjadi selesai
+        if ($bimbingan->status_pembimbing_1 === 'selesai' && $bimbingan->status_pembimbing_2 === 'selesai') {
+            $bimbingan->status_bimbingan = 'selesai';
+        }
+
+        $bimbingan->save();
+
+        return redirect()->route('bimbingans.show', $id_bimbingan)->with('success', 'Status bimbingan diperbarui.');
     }
 }

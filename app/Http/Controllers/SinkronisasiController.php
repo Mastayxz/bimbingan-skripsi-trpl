@@ -76,7 +76,7 @@ class SinkronisasiController extends Controller
         SyncDosenJob::dispatch($tahunAkademik);
 
         // Berikan respons ke pengguna
-        return back()->with('success', 'Sinkronisasi sedang berjalan di latar belakang.');
+        return back()->with('success', 'Sinkronisasi sedang berjalan belakang.');
     }
 
     public function syncMahasiswa(Request $request)
@@ -92,6 +92,6 @@ class SinkronisasiController extends Controller
         SyncMahasiswaJob::dispatch($tahunAkademik);
 
         // Berikan respons ke pengguna
-        return back()->with('success', 'Sinkronisasi sedang berjalan di latar belakang.');
+        return back()->with('success', 'Sinkronisasi sedang berjalan belakang.');
     }
 }

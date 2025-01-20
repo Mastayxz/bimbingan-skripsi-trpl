@@ -47,6 +47,7 @@ class SyncMahasiswaJob implements ShouldQueue
         foreach ($dataMahasiswa as $mahasiswa) {
             if (in_array($mahasiswa['prodi'], ['Teknologi Rekayasa Perangkat Lunak'])) {
                 $existingMahasiswa = Mahasiswa::where('nim', $mahasiswa['nim'])->first();
+                Log::info('Tahun Masuk untuk NIM ' . $mahasiswa['nim'] . ': ' . '20' . substr($mahasiswa['nim'], 0, 2)); // Debug tahun masuk
                 Mahasiswa::updateOrCreate(
                     ['nim' => $mahasiswa['nim']],
                     [
