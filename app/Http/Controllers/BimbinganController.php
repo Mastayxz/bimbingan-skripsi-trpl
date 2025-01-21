@@ -27,7 +27,10 @@ class BimbinganController extends Controller
         } else {
             abort(403, 'Unauthorized access.');
         }
+        $query = Bimbingan::query();
 
+        $bimbingans = $query->with(['skripsi', 'mahasiswaBimbingan', 'dosenPembimbing1', 'dosenPembimbing2'])
+            ->paginate(6); // Pagination 6 item per halaman
         return view('bimbingan.index', compact('bimbingans'));
     }
 
@@ -103,5 +106,20 @@ class BimbinganController extends Controller
         $bimbingan->save();
 
         return redirect()->route('bimbingans.show', $id_bimbingan)->with('success', 'Status bimbingan diperbarui.');
+    }
+    public function searchBimbingan(Request $request)
+    {
+        $keyword = $request->input('keyword');
+
+        // Mencari bimbingan berdasarkan keyword di NIM mahasiswa
+        $bimbingans = Bimbingan::query()
+            ->when($keyword, function ($query) use ($keyword) {
+                $query->whereHas('mahasiswaBimbingan', function ($subQuery) use ($keyword) {
+                    $subQuery->where('nim', 'like', "%{$keyword}%");
+                });
+            })
+            ->paginate(6);
+
+        return view('bimbingan.index', compact('bimbingans', 'keyword'));
     }
 }

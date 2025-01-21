@@ -1,5 +1,9 @@
 @extends('layouts.app')
-
+@section('breadcrumb')
+    <x-breadcrumb :links="[
+        'Daftarkan Proposal' => route('proposal.create'),
+    ]" />
+@endsection
 @section('content')
     <div class="max-w-full mx-auto bg-white dark:bg-gray-800 p-8 rounded-lg shadow-lg">
         @if (session('success'))

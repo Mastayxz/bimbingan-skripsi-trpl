@@ -20,14 +20,14 @@
         <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
             <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                 <tr>
-                    <th scope="col" class="px-6 py-3">No.</th>
-                    <th scope="col" class="px-6 py-3">Judul Skripsi</th>
-                    <th scope="col" class="px-6 py-3">NIM Mahasiswa</th>
-                    <th scope="col" class="px-6 py-3">Tanggal Pengajuan</th>
-                    <th scope="col" class="px-6 py-3">Nama Dosen Pembimbing 1</th>
-                    <th scope="col" class="px-6 py-3">NIP Dosen Pembimbing 1</th>
-                    <th scope="col" class="px-6 py-3">Nama Dosen Pembimbing 2</th>
-                    <th scope="col" class="px-6 py-3">NIP Dosen Pembimbing 2</th>
+                    <th scope="col" class="px-6 py-3 whitespace-nowrap">No.</th>
+                    <th scope="col" class="px-6 py-3 whitespace-nowrap">Judul Skripsi</th>
+                    <th scope="col" class="px-6 py-3 whitespace-nowrap">NIM</th>
+                    <th scope="col" class="px-6 py-3 whitespace-nowrap">Tanggal Pengajuan</th>
+                    <th scope="col" class="px-6 py-3 whitespace-nowrap">Nama Dosen Pembimbing 1</th>
+                    <th scope="col" class="px-6 py-3 whitespace-nowrap">NIP Dosen Pembimbing 1</th>
+                    <th scope="col" class="px-6 py-3 whitespace-nowrap">Nama Dosen Pembimbing 2</th>
+                    <th scope="col" class="px-6 py-3 whitespace-nowrap">NIP Dosen Pembimbing 2</th>
                     <th scope="col" class="px-6 py-3 text-center">Aksi</th>
                     <th scope="col" class="px-6 py-3 text-center">Kelola</th>
                 </tr>
@@ -37,12 +37,13 @@
                     <tr
                         class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
                         <td class="px-6 py-4 text-center">{{ $loop->iteration }}</td>
-                        <td class="px-6 py-4">{{ $item->judul_skripsi }}</td>
-                        <td class="px-6 py-4">{{ $item->mahasiswaSkripsi->nim }}</td>
-                        <td class="px-6 py-4">{{ \Carbon\Carbon::parse($item->tanggal_pengajuan)->format('d M Y') }}</td>
-                        <td class="px-6 py-4">{{ $item->dosenPembimbing1->nama }}</td>
-                        <td class="px-6 py-4">{{ $item->dosenPembimbing1->nip }}</td>
-                        <td class="px-6 py-4">
+                        <td class="px-6 py-4 whitespace-nowrap">{{ $item->judul_skripsi }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">{{ $item->mahasiswaSkripsi->nim }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            {{ \Carbon\Carbon::parse($item->tanggal_pengajuan)->format('d M Y') }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">{{ $item->dosenPembimbing1->nama }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">{{ $item->dosenPembimbing1->nip }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
                             @if ($item->dosenPembimbing2)
                                 {{ $item->dosenPembimbing2->nama }}
                             @else

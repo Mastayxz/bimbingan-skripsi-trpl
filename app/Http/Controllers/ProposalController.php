@@ -17,11 +17,40 @@ class ProposalController extends Controller
 
         return view('mahasiswa.proposal.create', compact('dosens'));
     }
+
+    public function editDosen(ProposalSkripsi $proposals, $id)
+    {
+        $dosens = Dosen::all();
+        $proposals = ProposalSkripsi::findOrFail($id);
+        return view('admin.proposal.edit', compact('proposals', 'dosens'));
+    }
     //
+    public function editDosenPembimbing1(Request $request, ProposalSkripsi $proposal, $id)
+    {
+        $proposal = ProposalSkripsi::findOrFail($id);
+        // Validasi input
+        $request->validate([
+            'dosen_pembimbing_1' => 'required|exists:dosens,id',
+        ]);
+
+        // Update dosen pembimbing 1 skripsi
+        $proposal->update([
+            'id_dosen_pembimbing_1' => $request->dosen_pembimbing_1,
+        ]);
+
+        $proposal->status = 'diajukan';
+        $proposal->save();
+
+        return redirect()->route('admin.proposal.index', $proposal)->with('success', 'Dosen pembimbing 1 berhasil diperbarui.');
+    }
+
     public function store(Request $request)
     {
         // Periksa apakah mahasiswa sudah memiliki proposal yang disetujui
         $mahasiswa = Auth::user()->mahasiswa;
+        if ($mahasiswa->tahun_masuk >= 2023) {
+            return redirect()->route('proposal.create')->with('error', 'Anda belum dapat mendaftarkan proposal');
+        }
         $existingProposal = ProposalSkripsi::where('id_mahasiswa', $mahasiswa->id)
             ->where('status', ['diajukan', 'disetujui', 'ikut ujian']) // Cek hanya proposal yang disetujui
             ->first();

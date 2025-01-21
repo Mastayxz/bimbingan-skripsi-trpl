@@ -48,6 +48,7 @@ Route::middleware(['auth', 'role:dosen'])->group(function () {
     Route::get('/penilaian/create-from-bimbingan/{id}', [PenilaianController::class, 'createFromBimbingan'])->name('penilaian.createFromBimbingan');
 
     Route::post('bimbingan/{id_bimbingan}/setStatusSelesai/{pembimbing}', [BimbinganController::class, 'setStatusSelesaiPembimbing'])->name('bimbingan.setStatusSelesai');
+    Route::get('/bimbingan/search', [BimbinganController::class, 'searchBimbingan'])->name('bimbingan.search');
 });
 
 
@@ -90,6 +91,9 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::post('/admin/dosen/update/{id}', [AdminController::class, 'updateDosen'])->name('admin.dosen.update');
     Route::get('/admin/dosen/delete/{id}', [AdminController::class, 'deleteDosen'])->name('admin.dosen.delete');
 
+    Route::get('/admin/proposal/edit/{id}', [ProposalController::class, 'editDosen'])->name('admin.proposal.edit');
+    Route::post('/admin/proposal/update/{id}', [ProposalController::class, 'editDosenPembimbing1'])->name('admin.proposal.update');
+
     // Rute untuk manage Skripsi
     Route::get('/admin/skripsi/edit/{id}', [SkripsiController::class, 'edit'])->name('admin.skripsi.edit');
     Route::post('/admin/skripsi/update/{id}', [SkripsiController::class, 'editDosenPembimbing'])->name('admin.skripsi.update');
@@ -114,7 +118,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/tasks/create/{bimbinganId}', [TaskController::class, 'create'])->name('tasks.create');
     Route::post('/tasks/store/{bimbinganId}', [TaskController::class, 'store'])->name('tasks.store');
     Route::get('/tasks/{taskId}', [TaskController::class, 'show'])->name('tasks.show');
-    Route::get('/dosen/proposal/detail/{id_proposal}', [ProposalController::class, 'showDetail'])->name('proposal.detail');
+    Route::get('/proposal/detail/{id_proposal}', [ProposalController::class, 'showDetail'])->name('proposal.detail');
 });
 Route::prefix('api')  // Menambahkan prefix "api"
     ->middleware('api')  // Menambahkan middleware API

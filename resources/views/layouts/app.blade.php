@@ -14,6 +14,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{ config('app.name') }}</title>
+    <link rel="icon" href="{{ asset('images/logo.png') }}">
 
     <!-- Font Awesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
@@ -81,14 +82,14 @@
     <div class="flex flex-col lg:flex-row">
         <!-- Sidebar -->
         <div id="sidebar"
-            class="fixed top-0 left-0 w-64 bg-white dark:bg-gray-800 text-black dark:text-white p-6 shadow-md border-r border-gray-500 h-full transform -translate-x-full lg:translate-x-0 transition-transform duration-300 z-40 mt-16 lg:mt-16">
+            class="fixed top-0 left-0 w-72 bg-white dark:bg-gray-800 text-black dark:text-white p-6 shadow-md border-r border-gray-500 h-full transform -translate-x-full lg:translate-x-0 transition-transform duration-300 z-40 mt-16 lg:mt-16">
             <!-- Profile Section -->
             <div class="flex flex-row items-center mb-8">
                 <div
                     class="flex items-center justify-center h-20 w-24 bg-gray-700 text-white font-bold text-lg border-2 border-white">
                     {{ substr(Auth::user()->name, 0, 1) }}
                 </div>
-                <div class="ml-3">
+                <div class="ml-8"> <!-- Margin kiri diperbesar -->
                     <a href="{{ route('profile.edit') }}" class="font-semibold text-md hover:text-blue-400">
                         {{ Auth::user()->name }}
                     </a>
@@ -337,8 +338,11 @@
         </div>
 
         <div class="flex-1 bg-gray-100 dark:bg-gray-900 p-6 lg:ml-64">
-            <div class="w-full">
-                <div class=" mx-auto">
+            <div class="relative w-full px-4">
+                <div class="max-w-screen-xl mx-auto">
+                    <!-- Konten di sini -->
+                    @section('breadcrumb')
+                    @show
                     {{ $slot ?? '' }}
                     @yield('content')
                 </div>
