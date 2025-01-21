@@ -10,8 +10,8 @@ class PenilaianBimbingan extends Model
     use HasFactory;
 
     protected $fillable = [
-        'bimbingan_id',
-        'dosen_id',
+        'bimbingan_id', // bimbingan tempat dia nilai, diambil dari url 
+        'dosen_id', // tergantung yang login ini juga url
         'motivasi',
         'kreativitas',
         'disiplin',

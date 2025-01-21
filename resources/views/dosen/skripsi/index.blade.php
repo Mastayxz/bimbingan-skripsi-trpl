@@ -1,5 +1,10 @@
     @extends('layouts.app')
-
+    @section('breadcrumb')
+        <x-breadcrumb :links="[
+            'Dashboard' => route('dashboard.dosen'),
+            'Daftar Skripsi' => route('skripsi.index'),
+        ]" />
+    @endsection
     @section('content')
         <div class="container mx-auto px-4 py-6">
             <h1 class="text-3xl font-semibold mb-6 dark:text-white">Daftar Skripsi Bimbingan</h1>

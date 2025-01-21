@@ -1,5 +1,10 @@
 @extends('layouts.app')
-
+@section('breadcrumb')
+    <x-breadcrumb :links="[
+        'Daftar Proposal' => route('dosen.proposal.index'),
+        'Detail Proposal' => route('proposal.detail', $proposal->id_proposal),
+    ]" />
+@endsection
 @section('content')
     <div class="container mx-auto px-4 py-6">
         <h1 class="text-3xl font-semibold mb-6">Detail Proposal</h1>
@@ -68,6 +73,11 @@
                         </a>
                     </div>
                 @endif
+                <div class="mt-6">
+                    <a href="{{ route('proposal.index') }}" class="py-2 px-4 bg-gray-500 text-white rounded hover:bg-gray-600">
+                        Kembali ke Daftar Proposal
+                    </a>
+                </div>
             @endrole
 
             @role('dosen')
@@ -103,16 +113,26 @@
                         </button>
                     </form>
                 @endif
+                <div class="mt-6">
+                    <a href="{{ route('dosen.proposal.index') }}"
+                        class="py-2 px-4 bg-gray-500 text-white rounded hover:bg-gray-600">
+                        Kembali ke Daftar Proposal
+                    </a>
+                </div>
+            @endrole
+
+            @role('admin')
+                <div class="mt-6">
+                    <a href="{{ route('admin.proposal.index') }}"
+                        class="py-2 px-4 bg-gray-500 text-white rounded hover:bg-gray-600">
+                        Kembali ke Daftar Proposal Admin
+                    </a>
+                </div>
             @endrole
         </div>
 
         <!-- Tombol Kembali -->
-        <div class="mt-6">
-            <a href="{{ route('dosen.proposal.index') }}"
-                class="py-2 px-4 bg-gray-500 text-white rounded hover:bg-gray-600">
-                Kembali ke Daftar Proposal
-            </a>
-        </div>
+
     </div>
 
 

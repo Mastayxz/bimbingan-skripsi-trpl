@@ -3,7 +3,7 @@
 @section('content')
     <div class="container mx-auto px-6">
         <div class="bg-gray-800 text-white p-6 rounded-lg shadow-md">
-            <h1 class="text-2xl font-bold mb-6">Detail Bimbingan</h1>
+            <h1 class="text-2xl font-bold mb-6 dark:text-white">Detail Bimbingan</h1>
 
             <!-- Progress Bar -->
             <div class="mb-6">
@@ -66,7 +66,7 @@
                 <!-- Menampilkan Pembimbing 1 -->
                 <h3 class="font-semibold text-lg mt-4   ">Pembimbing 1:</h3>
                 <p class="text-sm">
-                    @if ($bimbingan->id_dosen_pembimbing_1 == Auth::user()->dosen->id)
+                    @if ($bimbingan->dosen_pembimbing_1 == Auth::user()->dosen->id)
                         Anda adalah Pembimbing 1.
                     @else
                         Pembimbing 1 adalah {{ $bimbingan->dosenPembimbing1->nama }}
@@ -145,6 +145,11 @@
                     </a>
                 </div>
             @endrole
+        </div>
+        <div class="mt-6">
+            <a href="{{ route('bimbingan.index') }}" class="py-2 px-4 bg-gray-500 text-white rounded hover:bg-gray-600">
+                Kembali ke Daftar Bimbingan
+            </a>
         </div>
     </div>
 @endsection

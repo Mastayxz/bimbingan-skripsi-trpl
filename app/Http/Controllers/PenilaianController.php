@@ -15,8 +15,8 @@ class PenilaianController extends Controller
         $bimbingan = Bimbingan::findOrFail($id);
 
         // Pastikan dosen yang login adalah pembimbing dari bimbingan ini
-        $dosen = Auth::user(); // Mengasumsikan dosen login
-        if (!$bimbingan->dosen->contains($dosen)) {
+        $dosen = Auth::user()->dosen; // Mengambil dosen yang login
+        if ($bimbingan->dosenPembimbing1->id !== $dosen->id) {
             abort(403, 'Anda tidak memiliki akses untuk menilai bimbingan ini.');
         }
 
