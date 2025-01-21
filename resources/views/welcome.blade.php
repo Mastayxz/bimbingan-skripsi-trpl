@@ -227,7 +227,7 @@
                 <h2 class="text-3xl font-bold">Panduan Singkat</h2>
                 <div class="text-gray-600 flex flex-row justify-center p-4">
                     <div class="border-b-2 border-transparent hover:border-b-2 hover:border-blue-500 pl-4 pr-4 transition-all duration-200"><a href="javascript:void(0)" onclick="showSection('mendapatkanAkun')">Masuk Sistem</a></div>
-                    <div class="border-b-2 border-transparent hover:border-b-2 hover:border-blue-500 pl-4 pr-4 transition-all duration-200"><a href="javascript:void(0)" onclick="showSection('masukSistem')">Masuk Sistem</a></div>
+                    <div class="border-b-2 border-transparent hover:border-b-2 hover:border-blue-500 pl-4 pr-4 transition-all duration-200"><a href="javascript:void(0)" onclick="showSection('masukSistem')">Manajemen Profile</a></div>
                     <div class="border-b-2 border-transparent hover:border-b-2 hover:border-blue-500 pl-4 pr-4 transition-all duration-200"><a href="javascrript:void(0)" onclick="showSection('bukuPanduan')">Buku Panduan</a></div>
                 </div>
                 <hr class="border-t-2 border-gray-200 my-4">
@@ -268,26 +268,37 @@
                         <div class="flex items-center">
                             <div class="w-1 md:h-40 bg-blue-400 ml-10"></div>
                             <div class="block w-full">
+
                                 <div class="rounded-b-lg w-full max-w-4xl shadow-lg mb-8 mx-auto mt-8 px-6 md:px-12 lg:mx-20">
                                     <div class="h-10 bg-blue-400 text-white flex items-center pl-6">
-                                        <h1 class="font-bold text-lg md:text-xl">Pilih menu Login</h1>
+                                        <h1 class="font-bold text-lg md:text-xl">Pilih Nama User</h1>
                                     </div>
                                     <p class="text-gray-600 p-6 md:p-8 text-base md:text-lg">
-                                        Buka Website Sibimoli dan klik 
-                                        <a href="{{ route('login') }}" 
-                                        class="border border-blue-400 bg-blue-400 px-4 py-2 text-white rounded shadow hover:bg-blue-500 transition-all duration-200 block md:inline">
-                                        Login
-                                        </a>
+                                        Pilih Nama User pada dashboard, akan muncul halaman editing profile.
                                     </p>
                                 </div>
+
                                 <div class="rounded-b-lg w-full max-w-4xl shadow-lg mb-8 mx-auto mt-8 px-6 md:px-12 lg:mx-20">
-                                        <div class="h-12 bg-blue-400 text-white flex items-center pl-6">
-                                            <h1 class="font-bold text-lg md:text-xl">Isi data sesuai dengan role</h1>
-                                        </div>
+                                    <div class="h-10 bg-blue-400 text-white flex items-center pl-6">
+                                        <h1 class="font-bold text-lg md:text-xl">Updite Profile User</h1>
+                                    </div>
                                         <ul class="list-disc list-inside text-gray-600 p-6 md:p-8 text-base md:text-lg leading-relaxed">
-                                            <li>Untuk <span class="font-bold text-blue-600">Mahasiswa</span>, masukkan NIM dan Password dimana password sesuai dengan NIM.</li>
-                                            <li>Untuk <span class="font-bold text-blue-600">Dosen</span>, masukkan NIP dan Password dimana password sesuai dengan NIP.</li>
-                                            <li>Kemudian klik tombol <span class="font-bold text-blue-600">Login</span>.</li>
+                                            <li>Untuk <span class="font-bold text-blue-600">Mahasiswa</span>, ganti sesuai dengan data pribadi mahasiswa.</li>
+                                            <li>Untuk <span class="font-bold text-blue-600">Dosen</span>, ganti sesuai dengan data pribadi dosen.</li>
+                                            <li>Kemudian klik tombol <span class="font-bold text-blue-600">Save</span>.</li>
+                                        </ul>
+                                    </p>
+                                </div>
+
+                                <div class="rounded-b-lg w-full max-w-4xl shadow-lg mb-8 mx-auto mt-8 px-6 md:px-12 lg:mx-20">
+                                    <div class="h-12 bg-blue-400 text-white flex items-center pl-6">
+                                        <h1 class="font-bold text-lg md:text-xl">Updite Password</h1>
+                                    </div>
+                                        <ul class="list-disc list-inside text-gray-600 p-6 md:p-8 text-base md:text-lg leading-relaxed">
+                                            <li>Inpukan Password Lama.</li>
+                                            <li>Inputkan Password Baru.</li>
+                                            <li>Inputkan Password yang Baru Untuk Melakukan Confrim Password.</li>
+                                            <li>Kemudian klik tombol <span class="font-bold text-blue-600">Updite</span>.</li>
                                         </ul>
                                 </div>
                                 </div>
