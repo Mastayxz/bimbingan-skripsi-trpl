@@ -18,19 +18,17 @@ class BimbinganController extends Controller
         if ($user->mahasiswa) { // Jika user adalah mahasiswa
             $bimbingans = Bimbingan::where('mahasiswa_id', $user->mahasiswa->id)
                 ->with(['skripsi', 'dosenPembimbing1', 'dosenPembimbing2'])
-                ->get();
+                ->paginate(6);
         } elseif ($user->dosen) { // Jika user adalah dosen
             $bimbingans = Bimbingan::with(['skripsi', 'mahasiswaBimbingan'])
                 ->where('dosen_pembimbing_1', $user->dosen->id)
                 ->orWhere('dosen_pembimbing_2', $user->dosen->id)
-                ->get();
+                ->paginate(6);
         } else {
             abort(403, 'Unauthorized access.');
         }
-        $query = Bimbingan::query();
-
-        $bimbingans = $query->with(['skripsi', 'mahasiswaBimbingan', 'dosenPembimbing1', 'dosenPembimbing2'])
-            ->paginate(6); // Pagination 6 item per halaman
+        // $query = Bimbingan::query();
+        // Pagination 6 item per halaman
         return view('bimbingan.index', compact('bimbingans'));
     }
 
@@ -120,6 +118,6 @@ class BimbinganController extends Controller
             })
             ->paginate(6);
 
-        return view('bimbingan.index', compact('bimbingans', 'keyword'));
+        redirect()->route('bimbingans.index', compact('bimbingans'));
     }
 }

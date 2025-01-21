@@ -16,9 +16,9 @@
             </div>
 
             <!-- Daftar Task -->
-            <h2 class="text-xl font-semibold mb-4">Daftar Task</h2>
+            <h2 class="text-xl font-semibold mb-4">Daftar Tugas</h2>
             @if ($tasks->isEmpty())
-                <p class="text-gray-400">Belum ada tugas yang ditambahkan.</p>
+                <p class="text-gray-400">Belum ada tugas yang diunggah mahasiswa.</p>
             @else
                 <ul class="space-y-4">
                     @foreach ($tasks as $task)
@@ -141,7 +141,7 @@
                 <div class="mt-6">
                     <a href="{{ route('tasks.create', $bimbingan->id_bimbingan) }}"
                         class="px-4 py-2 bg-green-600 text-white rounded-md shadow hover:bg-green-800">
-                        Tambah Task Baru
+                        Tambah Tugas Baru
                     </a>
                 </div>
             @endrole
