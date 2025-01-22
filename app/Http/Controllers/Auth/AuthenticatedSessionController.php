@@ -43,7 +43,7 @@ class AuthenticatedSessionController extends Controller
         // Cache key untuk percobaan login
         $cacheKey = 'login_attempts_' . $identifier;
         $maxAttempts = 3;
-        $lockoutTime = 45; // dalam detik
+        $lockoutTime = 5; // dalam detik
 
         // Periksa apakah pengguna terkunci
         if (Cache::has($cacheKey . '_lockout')) {

@@ -96,10 +96,10 @@
                         </li>
                     @endguest
                     <li>
-                        <button id="theme-toggle"
-                            class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">
-                            <i id="theme-toggle-icon" class="fas fa-moon"></i>
-                        </button>
+                        {{-- <button id="theme-toggle"
+                                class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">
+                                <i id="theme-toggle-icon" class="fas fa-moon"></i>
+                            </button> --}}
                     </li>
                 </ul>
             </div>
@@ -229,13 +229,16 @@
                 <div class="text-gray-600 flex flex-row justify-center p-4">
                     <div
                         class="border-b-2 border-transparent hover:border-b-2 hover:border-blue-500 pl-4 pr-4 transition-all duration-200">
-                        <a href="javascript:void(0)" onclick="showSection('mendapatkanAkun')">Masuk Sistem</a></div>
+                        <a href="javascript:void(0)" onclick="showSection('mendapatkanAkun')">Masuk Sistem</a>
+                    </div>
                     <div
                         class="border-b-2 border-transparent hover:border-b-2 hover:border-blue-500 pl-4 pr-4 transition-all duration-200">
-                        <a href="javascript:void(0)" onclick="showSection('masukSistem')">Manajemen Profile</a></div>
+                        <a href="javascript:void(0)" onclick="showSection('masukSistem')">Manajemen Profile</a>
+                    </div>
                     <div
                         class="border-b-2 border-transparent hover:border-b-2 hover:border-blue-500 pl-4 pr-4 transition-all duration-200">
-                        <a href="javascrript:void(0)" onclick="showSection('bukuPanduan')">Buku Panduan</a></div>
+                        <a href="javascrript:void(0)" onclick="showSection('bukuPanduan')">Buku Panduan</a>
+                    </div>
                 </div>
                 <hr class="border-t-2 border-gray-200 my-4">
             </div>
@@ -296,7 +299,7 @@
                             <div
                                 class="rounded-b-lg w-full max-w-4xl shadow-lg mb-8 mx-auto mt-8 px-6 md:px-12 lg:mx-20">
                                 <div class="h-10 bg-blue-400 text-white flex items-center pl-6">
-                                    <h1 class="font-bold text-lg md:text-xl">Updite Profile User</h1>
+                                    <h1 class="font-bold text-lg md:text-xl">Update Profile User</h1>
                                 </div>
                                 <ul
                                     class="list-disc list-inside text-gray-600 p-6 md:p-8 text-base md:text-lg leading-relaxed">
@@ -312,14 +315,14 @@
                             <div
                                 class="rounded-b-lg w-full max-w-4xl shadow-lg mb-8 mx-auto mt-8 px-6 md:px-12 lg:mx-20">
                                 <div class="h-12 bg-blue-400 text-white flex items-center pl-6">
-                                    <h1 class="font-bold text-lg md:text-xl">Updite Password</h1>
+                                    <h1 class="font-bold text-lg md:text-xl">Update Password</h1>
                                 </div>
                                 <ul
                                     class="list-disc list-inside text-gray-600 p-6 md:p-8 text-base md:text-lg leading-relaxed">
                                     <li>Inpukan Password Lama.</li>
                                     <li>Inputkan Password Baru.</li>
                                     <li>Inputkan Password yang Baru Untuk Melakukan Confrim Password.</li>
-                                    <li>Kemudian klik tombol <span class="font-bold text-blue-600">Updite</span>.</li>
+                                    <li>Kemudian klik tombol <span class="font-bold text-blue-600">Update</span>.</li>
                                 </ul>
                             </div>
                         </div>
