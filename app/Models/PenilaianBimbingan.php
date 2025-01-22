@@ -9,6 +9,7 @@ class PenilaianBimbingan extends Model
 {
     use HasFactory;
 
+    protected $table = 'penilaian_bimbingan';
     protected $fillable = [
         'bimbingan_id',
         'dosen_id',
@@ -19,16 +20,21 @@ class PenilaianBimbingan extends Model
         'perencanaan',
         'rancangan',
         'kesesuaian_rancangan',
-        'keberfungsian'
+        'keberfungsian',
+        'status',
     ];
 
     public function bimbingan()
     {
-        return $this->belongsTo(Bimbingan::class);
+        return $this->belongsTo(Bimbingan::class, 'bimbingan_id', 'id_bimbingan');
     }
 
     public function dosen()
     {
         return $this->belongsTo(Dosen::class);
+    }
+    public function getSkripsiBimbingan()
+    {
+    return $this->bimbingan->skripsi->judul_skripsi ?? 'Judul Skripsi Tidak Ditemukan';
     }
 }

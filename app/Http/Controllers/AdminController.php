@@ -7,9 +7,11 @@ use App\Models\Dosen;
 use App\Models\Skripsi;
 use App\Models\Bimbingan;
 use App\Models\Mahasiswa;
+use App\Models\PenilaianBimbingan;
 use Illuminate\Http\Request;
 use App\Models\ProposalSkripsi;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Redis;
 use Spatie\Permission\Models\Role;
 
 class AdminController extends Controller
@@ -134,6 +136,32 @@ class AdminController extends Controller
         // Mengirim data ke view
         return view('admin.bimbingan.index', compact('bimbingan'));
     }
+    public function listPenilaian()
+    {
+        // Mengambil data penilaian beserta relasi mahasiswa dan dosen
+        $penilaian = PenilaianBimbingan::with(['bimbingan', 'dosen', 'bimbingan.skripsi'])->get();
+        
+        
+        // Mengirim data ke view
+        return view('admin.penilaian.index', compact('penilaian'));
+    }
+    public function listDetailNilai()
+    {
+        // Mengambil data penilaian beserta relasi mahasiswa dan dosen
+        $penilaian = PenilaianBimbingan::with(['bimbingan', 'dosen', 'bimbingan.skripsi'])->get();
+        
+        
+        // Mengirim data ke view
+        return view('admin.penilaian.detail', compact('penilaian'));
+    }
+    public function lockNilai(Request $request, $id)
+    {
+        $penilaian = PenilaianBimbingan::findOrFail($id);
+        $penilaian->status = 'Terkunci';
+        $penilaian->save();
+
+        return redirect()->route('admin.penilaian.detail')->with('success', 'Nilai berhasil dikunci.');
+    }
 
 
 
@@ -253,4 +281,7 @@ class AdminController extends Controller
         // Mengembalikan response atau redirect
         return redirect()->route('admin.dosen')->with('success', 'Dosen berhasil dijadikan admin.');
     }
+
+     
 }
+

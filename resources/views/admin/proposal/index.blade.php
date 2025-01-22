@@ -42,7 +42,7 @@
                             <td class="px-6 py-4">{{ $proposal->mahasiswaProposal->nama }}</td>
                             <td class="px-6 py-4">{{ $proposal->dosenPembimbing1Proposal->nama }}</td>
                             <td class="px-6 py-4">{{ $proposal->dosenPembimbing1Proposal->nip }}</td>
-                            <td class="px-6 py-4"><a href="{{ route('dosen.proposal.detail', $proposal->id_proposal) }}"
+                            <td class="px-6 py-4"><a href="{{ route('proposal.detail', $proposal->id_proposal) }}"
                                     class="inline-block py-2 px-4 bg-blue-500 text-white text-sm rounded-full hover:bg-blue-600">
                                     Detail
                                 </a>

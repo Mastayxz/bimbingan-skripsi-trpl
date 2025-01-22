@@ -4,7 +4,7 @@
     <div class="bg-gray-800 text-white p-6 rounded-lg shadow-md">
         <h1 class="text-2xl font-bold mb-6">Tambah Task Baru</h1>
 
-        <form action="{{ route('tasks.store', $bimbingan->id_bimbingan) }}" method="POST" enctype="multipart/form-data">
+        <form action="{{ route('penilaian.store', $bimbingan->id_bimbingan) }}" method="POST" enctype="multipart/form-data">
             @csrf
 
             <!-- Nama Tugas -->
