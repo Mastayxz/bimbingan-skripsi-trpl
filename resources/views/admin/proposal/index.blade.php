@@ -21,14 +21,15 @@
             <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                 <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
-                        <th scope="col" class="px-6 py-3">No.</th>
-                        <th scope="col" class="px-6 py-3">Judul Proposal</th>
-                        <th scope="col" class="px-6 py-3">Mahasiswa</th>
-                        <th scope="col" class="px-6 py-3">Nama Mahasiswa</th>
-                        <th scope="col" class="px-6 py-3">Pembimbing 1</th>
-                        <th scope="col" class="px-6 py-3">NIP Pembimbing 1</th>
-                        <th scope="col" class="px-6 py-3">Detail</th>
+                        <th scope="col" class="px-6 py-3 whitespace-nowrap">No.</th>
+                        <th scope="col" class="px-6 py-3 whitespace-nowrap">Judul Proposal</th>
+                        <th scope="col" class="px-6 py-3 whitespace-nowrap">Nim Mahasiswa</th>
+                        <th scope="col" class="px-6 py-3 whitespace-nowrap">Nama Mahasiswa</th>
+                        <th scope="col" class="px-6 py-3 whitespace-nowrap">NIP Pembimbing 1</th>
+                        <th scope="col" class="px-6 py-3 whitespace-nowrap">Nama Pembimbing 1</th>
+                        <th scope="col" class="px-6 py-3 whitespace-nowrap">Detail</th>
                         <th scope="col" class="px-6 py-3 text-center">Status</th>
+                        <th scope="col" class="px-6 py-3 text-center">Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -57,6 +58,13 @@
                                     {{ ucfirst($proposal->status) }}
                                 </span>
                             </td>
+                            <td class="px-6 py-4 text-center whitespace-nowrap">
+                                <a href="{{ route('admin.proposal.edit', $proposal->id_proposal) }}"
+                                    class="inline-block py-2 px-4 bg-blue-500 text-white text-sm rounded hover:bg-blue-600">
+                                    Edit
+                                </a>
+                            </td>
+
 
                         </tr>
                     @endforeach

@@ -18,10 +18,23 @@
         <div class="bg-white dark:bg-gray-800 shadow-md rounded-lg p-6 mb-6">
             <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-2">Status Tugas</h2>
             <p class="text-gray-600 dark:text-gray-400"><strong>Status:</strong> {{ ucfirst($task->status) }}</p>
-            <p class="text-gray-600 dark:text-gray-400"><strong>Status Pembimbing 1:</strong>
-                {{ $task->status_dospem_1 ?? 'Belum disetujui' }}</p>
-            <p class="text-gray-600 dark:text-gray-400"><strong>Status Pembimbing 2:</strong>
-                {{ $task->status_dospem_2 ?? 'Belum disetujui' }}</p>
+            <p class="text-gray-600 dark:text-gray-400 >
+                "><strong>Status Pembimbing 1:</strong><span
+                    class="font-bold rounded-lg text-lg @if ($task->status_dospem_1 == 'disetujui') bg-green-200 text-green-700 
+                                @elseif($task->status_dospem_1 == 'menunggu') bg-blue-200 text-blue-800 
+                                @else bg-yellow-200 text-yellow-800 @endif"">
+
+                    {{ $task->status_dospem_1 ?? 'Belum disetujui' }}
+                </span>
+            </p>
+            <p class="text-gray-600 dark:text-gray-400"><strong>Status Pembimbing 2:</strong><span
+                    class="font-bold rounded-lg text-lg @if ($task->status_dospem_2 == 'disetujui') bg-green-200 text-green-700 
+                            @elseif($task->status_dospem_2 == 'menunggu') bg-blue-200 text-blue-800 
+                            @else bg-yellow-200 text-yellow-800 @endif"">
+
+                    {{ $task->status_dospem_2 ?? 'Belum disetujui' }}
+                </span>
+            </p>
         </div>
 
         @role('dosen')
@@ -104,7 +117,7 @@
         </div>
     @endif
     <div class="mt-6">
-        <a href="{{ url()->previous() }}"
+        <a href="{{ route('bimbingans.show', ['bimbingan_id' => $task->bimbingan->id_bimbingan]) }}"
             class="bg-gray-500 dark:bg-gray-600 text-white py-2 px-4 rounded hover:bg-gray-600 dark:hover:bg-gray-700 focus:outline-none">
             Kembali
         </a>

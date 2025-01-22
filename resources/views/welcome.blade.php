@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ config('app.name') }}</title>
+    <link rel="icon" href="{{ asset('images/logo.png') }}">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
@@ -42,17 +43,13 @@
                         d="M1 1h15M1 7h15M1 13h15" />
                 </svg>
             </button>
-            <div class="hidden w-full md:block md:w-auto" id="navbar-multi-level">
+            <div class=" w-full md:block md:w-auto " id="navbar-multi-level">
                 <ul
                     class="flex flex-col font-medium p-4 md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
                     @guest
                         <li>
                             <a href="{{ route('login') }}"
                                 class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">Login</a>
-                        </li>
-                        <li>
-                            <a href="{{ route('register') }}"
-                                class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">Register</a>
                         </li>
                     @else
                         <li>
@@ -137,7 +134,7 @@
     </section>
 
     <!-- Hero and Carousel Section -->
-    <section class="py-10">
+    <section class="py-10 z-0">
         <div class="w-full h-full">
             <div id="animation-carousel" class="relative w-full" data-carousel="static">
                 <!-- Carousel wrapper -->
@@ -225,7 +222,143 @@
         </div>
     </section>
 
+    <section class="py-20">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold">Panduan Singkat</h2>
+                <div class="text-gray-600 flex flex-row justify-center p-4">
+                    <div
+                        class="border-b-2 border-transparent hover:border-b-2 hover:border-blue-500 pl-4 pr-4 transition-all duration-200">
+                        <a href="javascript:void(0)" onclick="showSection('mendapatkanAkun')">Masuk Sistem</a></div>
+                    <div
+                        class="border-b-2 border-transparent hover:border-b-2 hover:border-blue-500 pl-4 pr-4 transition-all duration-200">
+                        <a href="javascript:void(0)" onclick="showSection('masukSistem')">Manajemen Profile</a></div>
+                    <div
+                        class="border-b-2 border-transparent hover:border-b-2 hover:border-blue-500 pl-4 pr-4 transition-all duration-200">
+                        <a href="javascrript:void(0)" onclick="showSection('bukuPanduan')">Buku Panduan</a></div>
+                </div>
+                <hr class="border-t-2 border-gray-200 my-4">
+            </div>
+            <div id="mendapatkanAkun"
+                class="content-section hidden opacity-0 transform -translate-x-full transition-all duration-500 ease-in-out mt-5 p-6 ">
+                <div class="bg-white rounded shadow">
+                    <div class="flex items-center">
+                        <div class="w-1 md:h-40 bg-blue-400 md:ml-10"></div>
+                        <div class="block w-full">
+                            <div
+                                class="rounded-b-lg w-full max-w-4xl shadow-lg mb-8 mx-auto mt-8 px-6 md:px-12 lg:mx-20">
+                                <div class="h-10 bg-blue-400 text-white flex items-center pl-6">
+                                    <h1 class="font-bold text-lg md:text-xl">Pilih menu Login</h1>
+                                </div>
+                                <p class="text-gray-600 p-6 md:p-8 text-base md:text-lg">
+                                    Buka Website Sibimoli dan klik
+                                    <a href="{{ route('login') }}"
+                                        class="border border-blue-400 bg-blue-400 px-4 py-2 text-white rounded shadow hover:bg-blue-500 transition-all duration-200 block md:inline">
+                                        Login
+                                    </a>
+                                </p>
+                            </div>
+                            <div
+                                class="rounded-b-lg w-full max-w-4xl shadow-lg mb-8 mx-auto mt-8 px-6 md:px-12 lg:mx-20">
+                                <div class="h-12 bg-blue-400 text-white flex items-center pl-6">
+                                    <h1 class="font-bold text-lg md:text-xl">Isi data sesuai dengan role</h1>
+                                </div>
+                                <ul
+                                    class="list-disc list-inside text-gray-600 p-6 md:p-8 text-base md:text-lg leading-relaxed">
+                                    <li>Untuk <span class="font-bold text-blue-600">Mahasiswa</span>, masukkan NIM dan
+                                        Password dimana password sesuai dengan NIM.</li>
+                                    <li>Untuk <span class="font-bold text-blue-600">Dosen</span>, masukkan NIP dan
+                                        Password dimana password sesuai dengan NIP.</li>
+                                    <li>Kemudian klik tombol <span class="font-bold text-blue-600">Login</span>.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="masukSistem"
+                class="content-section hidden opacity-0 transform -translate-x-full transition-all duration-500 ease-in-out mt-5 p-6 ">
+                <div class="bg-white rounded shadow">
+                    <div class="flex items-center">
+                        <div class="w-1 md:h-40 bg-blue-400 ml-10"></div>
+                        <div class="block w-full">
+
+                            <div
+                                class="rounded-b-lg w-full max-w-4xl shadow-lg mb-8 mx-auto mt-8 px-6 md:px-12 lg:mx-20">
+                                <div class="h-10 bg-blue-400 text-white flex items-center pl-6">
+                                    <h1 class="font-bold text-lg md:text-xl">Pilih Nama User</h1>
+                                </div>
+                                <p class="text-gray-600 p-6 md:p-8 text-base md:text-lg">
+                                    Pilih Nama User pada dashboard, akan muncul halaman editing profile.
+                                </p>
+                            </div>
+
+                            <div
+                                class="rounded-b-lg w-full max-w-4xl shadow-lg mb-8 mx-auto mt-8 px-6 md:px-12 lg:mx-20">
+                                <div class="h-10 bg-blue-400 text-white flex items-center pl-6">
+                                    <h1 class="font-bold text-lg md:text-xl">Updite Profile User</h1>
+                                </div>
+                                <ul
+                                    class="list-disc list-inside text-gray-600 p-6 md:p-8 text-base md:text-lg leading-relaxed">
+                                    <li>Untuk <span class="font-bold text-blue-600">Mahasiswa</span>, ganti sesuai
+                                        dengan data pribadi mahasiswa.</li>
+                                    <li>Untuk <span class="font-bold text-blue-600">Dosen</span>, ganti sesuai dengan
+                                        data pribadi dosen.</li>
+                                    <li>Kemudian klik tombol <span class="font-bold text-blue-600">Save</span>.</li>
+                                </ul>
+                                </p>
+                            </div>
+
+                            <div
+                                class="rounded-b-lg w-full max-w-4xl shadow-lg mb-8 mx-auto mt-8 px-6 md:px-12 lg:mx-20">
+                                <div class="h-12 bg-blue-400 text-white flex items-center pl-6">
+                                    <h1 class="font-bold text-lg md:text-xl">Updite Password</h1>
+                                </div>
+                                <ul
+                                    class="list-disc list-inside text-gray-600 p-6 md:p-8 text-base md:text-lg leading-relaxed">
+                                    <li>Inpukan Password Lama.</li>
+                                    <li>Inputkan Password Baru.</li>
+                                    <li>Inputkan Password yang Baru Untuk Melakukan Confrim Password.</li>
+                                    <li>Kemudian klik tombol <span class="font-bold text-blue-600">Updite</span>.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="bukuPanduan"
+                class="content-section hidden opacity-0 transform -translate-x-full transition-all duration-500 ease-in-out mt-5 p-6 ">
+                <div class="bg-white rounded shadow">
+                    pdf
+                </div>
+            </div>
+
+
+        </div>
+    </section>
+
 
 </body>
+<script>
+    function showSection(sectionId) {
+        // Sembunyikan semua section
+        document.querySelectorAll('.content-section').forEach(section => {
+            section.classList.add('hidden', 'opacity-0', 'translate-x-full');
+            section.classList.remove('opacity-100', 'translate-x-ful')
+        });
+        // Tampilkan section yang sesuai dengan id yang diklik
+        const section = document.getElementById(sectionId)
+        section.classList.remove('hidden')
+        setTimeout(() => {
+            section.classList.remove('opacity-0', 'translate-x-full')
+            section.classList.add('opacity-100', 'translate-x-0')
+        }, 50);
+    }
+</script>
+<style>
+    .hidden {
+        display: none;
+    }
+</style>
 
 </html>

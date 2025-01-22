@@ -2,6 +2,8 @@
 @section('content')
     <div class="container mx-auto px-4 ">
         <h1 class="text-3xl font-semibold text-gray-800 mb-6 dark:text-white">Daftar Bimbingan</h1>
+    <div class="container mx-auto px-4 ">
+        <h1 class="text-3xl font-semibold text-gray-800 mb-6 dark:text-white">Daftar Bimbingan</h1>
 
         {{-- <!-- Form Pencarian -->
         @role('dosen')
@@ -43,14 +45,45 @@
                             @endrole
                         </div>
 
+                    <a href="{{ route('bimbingans.show', ['bimbingan_id' => $bimbingan->id_bimbingan]) }}"
+                        class="dark:bg-gray-800 dark:text-white p-6 rounded-lg shadow-lg transform transition duration-300 hover:scale-105 hover:shadow-xl block">
+                        <div class="text-gray-800 font-semibold text-lg mb-2 dark:text-white uppercase">
+                            {{ strtoupper($bimbingan->skripsi->judul_skripsi) }}
+                        </div>
+
+                        <div class="text-sm text-gray-600 dark:text-white mt-2">
+                            @role('dosen')
+                                <p><span class="font-medium">Mahasiswa:</span> {{ $bimbingan->mahasiswaBimbingan->nama }}
+                                    ({{ $bimbingan->mahasiswaBimbingan->nim }})</p>
+                            @endrole
+
+                            @role('mahasiswa')
+                                <p><span class="font-medium">Pembimbing 1:</span> {{ $bimbingan->dosenPembimbing1->nama }}
+                                    ({{ $bimbingan->dosenPembimbing1->nip }})</p>
+                                <p><span class="font-medium">Pembimbing 2:</span> {{ $bimbingan->dosenPembimbing2->nama }}
+                                    ({{ $bimbingan->dosenPembimbing2->nip }})</p>
+                            @endrole
+                        </div>
+
                         <div class="mt-4">
+                            <span class="text-xs text-gray-500 dark:text-white">
+                                Bimbingan ini
+                                {{ $bimbingan->status_bimbingan === 'selesai' ? 'Selesai' : 'Sedang Berlangsung' }}
+                            </span>
                             <span class="text-xs text-gray-500 dark:text-white">
                                 Bimbingan ini
                                 {{ $bimbingan->status_bimbingan === 'selesai' ? 'Selesai' : 'Sedang Berlangsung' }}
                             </span>
                         </div>
                     </a>
+                    </a>
                 @endforeach
+            </div>
+
+
+            <!-- Pagination -->
+            <div class="mt-6">
+                {{ $bimbingans->links('pagination::tailwind') }}
             </div>
 
 

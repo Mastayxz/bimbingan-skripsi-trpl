@@ -20,14 +20,18 @@ class BimbinganController extends Controller
             $bimbingans = Bimbingan::where('mahasiswa_id', $user->mahasiswa->id)
                 ->with(['skripsi', 'dosenPembimbing1', 'dosenPembimbing2'])
                 ->paginate(6);
+                ->paginate(6);
         } elseif ($user->dosen) { // Jika user adalah dosen
             $bimbingans = Bimbingan::with(['skripsi', 'mahasiswaBimbingan'])
                 ->where('dosen_pembimbing_1', $user->dosen->id)
                 ->orWhere('dosen_pembimbing_2', $user->dosen->id)
                 ->paginate(6);
+                ->paginate(6);
         } else {
             abort(403, 'Unauthorized access.');
         }
+        // $query = Bimbingan::query();
+        // Pagination 6 item per halaman
         // $query = Bimbingan::query();
         // Pagination 6 item per halaman
         return view('bimbingan.index', compact('bimbingans'));
@@ -109,6 +113,23 @@ class BimbinganController extends Controller
 
         return redirect()->route('bimbingans.show', $id_bimbingan)->with('success', 'Status bimbingan diperbarui.');
     }
+    public function searchBimbingan(Request $request)
+    {
+        $keyword = $request->input('keyword');
+
+        // Mencari bimbingan berdasarkan keyword di NIM mahasiswa
+        $bimbingans = Bimbingan::query()
+            ->when($keyword, function ($query) use ($keyword) {
+                $query->whereHas('mahasiswaBimbingan', function ($subQuery) use ($keyword) {
+                    $subQuery->where('nim', 'like', "%{$keyword}%");
+                });
+            })
+            ->paginate(6);
+
+        redirect()->route('bimbingans.index', compact('bimbingans'));
+    }
+}
+
     public function searchBimbingan(Request $request)
     {
         $keyword = $request->input('keyword');

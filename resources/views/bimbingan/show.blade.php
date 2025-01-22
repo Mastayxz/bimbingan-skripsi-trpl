@@ -3,7 +3,7 @@
 @section('content')
     <div class="container mx-auto px-6">
         <div class="bg-gray-800 text-white p-6 rounded-lg shadow-md">
-            <h1 class="text-2xl font-bold mb-6">Detail Bimbingan</h1>
+            <h1 class="text-2xl font-bold mb-6 dark:text-white">Detail Bimbingan</h1>
 
             <!-- Progress Bar -->
             <div class="mb-6">
@@ -16,9 +16,9 @@
             </div>
 
             <!-- Daftar Task -->
-            <h2 class="text-xl font-semibold mb-4">Daftar Task</h2>
+            <h2 class="text-xl font-semibold mb-4">Daftar Tugas</h2>
             @if ($tasks->isEmpty())
-                <p class="text-gray-400">Belum ada tugas yang ditambahkan.</p>
+                <p class="text-gray-400">Belum ada tugas yang diunggah mahasiswa.</p>
             @else
                 <ul class="space-y-4">
                     @foreach ($tasks as $task)
@@ -66,7 +66,7 @@
                 <!-- Menampilkan Pembimbing 1 -->
                 <h3 class="font-semibold text-lg mt-4   ">Pembimbing 1:</h3>
                 <p class="text-sm">
-                    @if ($bimbingan->id_dosen_pembimbing_1 == Auth::user()->dosen->id)
+                    @if ($bimbingan->dosen_pembimbing_1 == Auth::user()->dosen->id)
                         Anda adalah Pembimbing 1.
                     @else
                         Pembimbing 1 adalah {{ $bimbingan->dosenPembimbing1->nama }}
@@ -164,10 +164,15 @@
                 <div class="mt-6">
                     <a href="{{ route('tasks.create', $bimbingan->id_bimbingan) }}"
                         class="px-4 py-2 bg-green-600 text-white rounded-md shadow hover:bg-green-800">
-                        Tambah Task Baru
+                        Tambah Tugas Baru
                     </a>
                 </div>
             @endrole
+        </div>
+        <div class="mt-6">
+            <a href="{{ route('bimbingan.index') }}" class="py-2 px-4 bg-gray-500 text-white rounded hover:bg-gray-600">
+                Kembali ke Daftar Bimbingan
+            </a>
         </div>
     </div>
 @endsection
