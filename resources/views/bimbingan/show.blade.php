@@ -126,15 +126,38 @@
                 @endif
 
                 <!-- Jika kedua pembimbing sudah selesai, status bimbingan dianggap selesai -->
-                @if ($bimbingan->status_bimbingan == 'selesai')
-                    <p class="text-lg font-semibold text-blue-500 mt-4">Bimbingan Selesai</p>
-                    <div class="mt-6">
-                        <a href="{{ route('penilaian.createFromBimbingan', $bimbingan->id_bimbingan) }}"
-                            class="px-4 py-2 bg-blue-600 text-white rounded-md shadow hover:bg-blue-800">
-                            Form Penilaian
-                        </a>
-                    </div>
-                @endif
+                <!-- Actions Section -->
+    <div class="flex gap-4 mt-6">
+        <!-- Form Penilaian -->
+        @if ($bimbingan->status_bimbingan == 'selesai' && !isset($penilaian))
+            <div>
+                <a href="{{ route('penilaian.createFromBimbingan', $bimbingan->id_bimbingan) }}" 
+                   class="px-4 py-2 bg-blue-600 text-white rounded-md shadow hover:bg-blue-800 mt-4">
+                    Form Penilaian
+                </a>
+            </div>
+        @elseif (isset($penilaian) && $penilaian->status == 'Terbuka')
+            <div>
+                <a href="{{ route('penilaian.edit', ['id_bimbingan' => $bimbingan->id_bimbingan, 'id' => $penilaian->id]) }}" 
+                   class="px-4 py-2 bg-yellow-600 text-white rounded-md shadow hover:bg-yellow-800 mt-4">
+                    Edit Penilaian
+                </a>
+            </div>
+        @elseif (isset($penilaian) && $penilaian->status == 'Terkunci')
+            <p class="text-lg font-semibold text-blue-500 mt-4">Penilaian Terkunci</p>
+        @endif
+    </div>
+    </div>
+
+                {{-- 
+                <form action="{{ route('penilaian.update', ['id_bimbingan' => $bimbingan->id_bimbingan, 'id' => $penilaian->id]) }}" method="POST">
+                    @csrf
+                    @method('PUT')
+                    <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md shadow hover:bg-blue-800">
+                        Update Form
+                    </button>
+                </form> --}}
+                
             @endrole
             <!-- Tombol Tambah Task untuk Mahasiswa -->
             @role('mahasiswa')

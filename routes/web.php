@@ -46,6 +46,11 @@ Route::middleware(['auth', 'role:dosen'])->group(function () {
     Route::put('/tasks/{taskId}/acc/{dosenId}', [TaskController::class, 'accTask'])->name('tasks.acc');
     Route::put('/tasks/{taskId}/revisi/{dosenId}', [TaskController::class, 'revisiTask'])->name('tasks.revisi');
     Route::get('/penilaian/create-from-bimbingan/{id}', [PenilaianController::class, 'createFromBimbingan'])->name('penilaian.createFromBimbingan');
+    Route::post('/penilaian/store-form/{id}', [PenilaianController::class, 'storeFromBimbingan'])->name('penilaian.store');
+    Route::get('/penilaian/{id_bimbingan}/edit-form/{id}', [PenilaianController::class, 'editFromBimbingan'])->name('penilaian.edit');
+    Route::put('/penilaian/{id_bimbingan}/update-form/{id}', [PenilaianController::class, 'updateFromBimbingan'])->name('penilaian.update');
+    Route::get('/dosen/nilai', [DosenController::class, 'daftarNilai'])->name('dosen.penilaian.index');
+    Route::get('/dosen/detail/nilai/{id}', [DosenController::class, 'listDetail'])->name('dosen.penilaian.detail');
 
     Route::post('bimbingan/{id_bimbingan}/setStatusSelesai/{pembimbing}', [BimbinganController::class, 'setStatusSelesaiPembimbing'])->name('bimbingan.setStatusSelesai');
     Route::get('/bimbingan/search', [BimbinganController::class, 'searchBimbingan'])->name('bimbingan.search');
@@ -76,6 +81,10 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/admin/skripsi', [AdminController::class, 'listSkripsi'])->name('admin.skripsi.index');
     Route::get('/admin/proposal', [AdminController::class, 'listProposal'])->name('admin.proposal.index');
     Route::get('/admin/bimbingan', [AdminController::class, 'listBimbingan'])->name('admin.bimbingan.index');
+    Route::get('/admin/nilai', [AdminController::class, 'listPenilaian'])->name('admin.penilaian.index');
+    Route::get('/admin/detail/nilai', [AdminController::class, 'listDetailNilai'])->name('admin.penilaian.detail');
+    Route::get('/admin/lock/nilai/{id}', [AdminController::class, 'lockNilai'])->name('admin.penilaian.lock');
+
 
     // create bimbingan dari skripsi lulus ujian
     Route::get('/admin/skripsi/approve/{id_skripsi}', [AdminController::class, 'approveSkripsi'])->name('admin.skripsi.approve');

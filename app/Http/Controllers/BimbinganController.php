@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Task;
 use App\Models\Skripsi;
+use App\Models\PenilaianBimbingan;
 use App\Models\Bimbingan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -19,14 +20,18 @@ class BimbinganController extends Controller
             $bimbingans = Bimbingan::where('mahasiswa_id', $user->mahasiswa->id)
                 ->with(['skripsi', 'dosenPembimbing1', 'dosenPembimbing2'])
                 ->paginate(6);
+                ->paginate(6);
         } elseif ($user->dosen) { // Jika user adalah dosen
             $bimbingans = Bimbingan::with(['skripsi', 'mahasiswaBimbingan'])
                 ->where('dosen_pembimbing_1', $user->dosen->id)
                 ->orWhere('dosen_pembimbing_2', $user->dosen->id)
                 ->paginate(6);
+                ->paginate(6);
         } else {
             abort(403, 'Unauthorized access.');
         }
+        // $query = Bimbingan::query();
+        // Pagination 6 item per halaman
         // $query = Bimbingan::query();
         // Pagination 6 item per halaman
         return view('bimbingan.index', compact('bimbingans'));
@@ -37,10 +42,12 @@ class BimbinganController extends Controller
     {
         $user = Auth::user();
         $tasks = Task::where('bimbingan_id', $bimbingan_id)->get();
-
+        $penilaian = PenilaianBimbingan::where('bimbingan_id', $bimbingan_id)
+        ->where('dosen_id', optional($user->dosen)->id)
+        ->first();
         // Query bimbingan dengan relasi yang diperlukan
-        $bimbingan = Bimbingan::with(['tasks', 'skripsi', 'mahasiswaBimbingan', 'dosenPembimbing1', 'dosenPembimbing2'])
-            ->findOrFail($bimbingan_id);
+        $bimbingan = Bimbingan::with(['tasks', 'skripsi', 'mahasiswaBimbingan', 'dosenPembimbing1', 'dosenPembimbing2', 'penilaian'])
+        ->findOrFail($bimbingan_id);
 
         // Validasi akses untuk mahasiswa
         if ($user->mahasiswa && $bimbingan->mahasiswa_id === $user->mahasiswa->id) {
@@ -53,13 +60,14 @@ class BimbinganController extends Controller
             // Jika bukan mahasiswa atau dosen terkait, tolak akses
             abort(403, 'Unauthorized access.');
         }
+        
 
         // Hitung progress berdasarkan task yang selesai
         $completedTasks = $tasks->where('status', 'selesai')->count();
         $totalTasks = $tasks->count();
         $progress = $totalTasks > 0 ? ($completedTasks / $totalTasks) * 100 : 0;
 
-        return view('bimbingan.show', compact('bimbingan', 'tasks', 'progress'));
+        return view('bimbingan.show', compact('bimbingan', 'tasks', 'progress', 'penilaian'));
     }
 
     public function indexForDosen()
@@ -105,6 +113,23 @@ class BimbinganController extends Controller
 
         return redirect()->route('bimbingans.show', $id_bimbingan)->with('success', 'Status bimbingan diperbarui.');
     }
+    public function searchBimbingan(Request $request)
+    {
+        $keyword = $request->input('keyword');
+
+        // Mencari bimbingan berdasarkan keyword di NIM mahasiswa
+        $bimbingans = Bimbingan::query()
+            ->when($keyword, function ($query) use ($keyword) {
+                $query->whereHas('mahasiswaBimbingan', function ($subQuery) use ($keyword) {
+                    $subQuery->where('nim', 'like', "%{$keyword}%");
+                });
+            })
+            ->paginate(6);
+
+        redirect()->route('bimbingans.index', compact('bimbingans'));
+    }
+}
+
     public function searchBimbingan(Request $request)
     {
         $keyword = $request->input('keyword');

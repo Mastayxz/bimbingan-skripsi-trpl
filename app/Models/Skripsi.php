@@ -29,6 +29,10 @@ class Skripsi extends Model
     {
         return $this->belongsTo(ProposalSkripsi::class, 'id_proposal');
     }
+    public function bimbinganSkripsi()
+    {
+        return $this->hasMany(Bimbingan::class, 'skripsi_id');
+    }
     // Relasi dengan Mahasiswa
     public function mahasiswaSkripsi()
     {

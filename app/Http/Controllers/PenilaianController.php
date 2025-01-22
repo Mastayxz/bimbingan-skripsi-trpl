@@ -15,12 +15,12 @@ class PenilaianController extends Controller
         $bimbingan = Bimbingan::findOrFail($id);
 
         // Pastikan dosen yang login adalah pembimbing dari bimbingan ini
-        $dosen = Auth::user()->dosen; // Mengambil dosen yang login
-        if ($bimbingan->dosenPembimbing1->id !== $dosen->id) {
+        $dosens = Auth::user()->dosen->id; // Mengasumsikan dosen login
+        if ($bimbingan->dosenPembimbing1->id !== $dosens && $bimbingan->dosenPembimbing2->id !== $dosens) {
             abort(403, 'Anda tidak memiliki akses untuk menilai bimbingan ini.');
         }
 
-        return view('penilaian_bimbingan.create_from_bimbingan', compact('bimbingan', 'dosen'));
+        return view('bimbingan.penilaianbimbingan', compact('bimbingan', 'dosens'));
     }
 
     public function storeFromBimbingan(Request $request, $id)
@@ -36,16 +36,16 @@ class PenilaianController extends Controller
             'keberfungsian' => 'nullable|numeric|min:0|max:100',
         ]);
 
-        $dosen = Auth::user(); // Mengambil dosen yang login
+        $dosens = Auth::user()->dosen->id; // Mengambil dosen yang login
         $bimbingan = Bimbingan::findOrFail($id);
 
         // Pastikan dosen adalah pembimbing bimbingan ini
-        if (!$bimbingan->dosens->contains($dosen)) {
+        if ($bimbingan->dosenPembimbing1->id !== $dosens && $bimbingan->dosenPembimbing2->id !== $dosens) {
             abort(403, 'Anda tidak memiliki akses untuk menilai bimbingan ini.');
         }
 
         PenilaianBimbingan::updateOrCreate(
-            ['bimbingan_id' => $id, 'dosen_id' => $dosen->id],
+            ['bimbingan_id' => $id, 'dosen_id' => $dosens],
             [
                 'motivasi' => $request->motivasi,
                 'kreativitas' => $request->kreativitas,
@@ -55,9 +55,59 @@ class PenilaianController extends Controller
                 'rancangan' => $request->rancangan,
                 'kesesuaian_rancangan' => $request->kesesuaian_rancangan,
                 'keberfungsian' => $request->keberfungsian,
+                'status' => 'Terbuka',
             ]
         );
 
-        return redirect()->route('bimbingan.show', $id)->with('success', 'Penilaian berhasil disimpan.');
+        return redirect()->route('bimbingans.show', $id)->with('success', 'Penilaian berhasil disimpan.');
     }
-}
+    public function editFromBimbingan($id_bimbingan, $id)
+    {
+        $bimbingan = Bimbingan::findOrFail($id_bimbingan);
+        $penilaian = PenilaianBimbingan::where('bimbingan_id', $id_bimbingan)->where('dosen_id', Auth::user()->dosen->id)->firstOrFail();
+        $dosens = Auth::user()->dosen->id; // Mengasumsikan dosen login
+        // if ($bimbingan->dosenPembimbing1->id !== $dosens && $bimbingan->dosenPembimbing2->id !== $dosens) {
+        //     abort(403, 'Anda tidak memiliki akses untuk menilai bimbingan ini.');
+        // }
+
+        return view('bimbingan.edit', compact('bimbingan', 'dosens', 'penilaian'));
+    }
+    
+        public function updateFromBimbingan(Request $request, $id_bimbingan, $id)
+        {
+            $request->validate([
+                'motivasi' => 'nullable|numeric|min:0|max:100',
+                'kreativitas' => 'nullable|numeric|min:0|max:100',
+                'disiplin' => 'nullable|numeric|min:0|max:100',
+                'metodologi' => 'nullable|numeric|min:0|max:100',
+                'perencanaan' => 'nullable|numeric|min:0|max:100',
+                'rancangan' => 'nullable|numeric|min:0|max:100',
+                'kesesuaian_rancangan' => 'nullable|numeric|min:0|max:100',
+                'keberfungsian' => 'nullable|numeric|min:0|max:100',
+            ]);
+
+            $dosens = Auth::user()->dosen->id; // Mengambil dosen yang login
+            $bimbingan = Bimbingan::findOrFail($id_bimbingan);
+
+            // Pastikan dosen adalah pembimbing bimbingan ini
+            if ($bimbingan->dosenPembimbing1->id !== $dosens && $bimbingan->dosenPembimbing2->id !== $dosens) {
+                abort(403, 'Anda tidak memiliki akses untuk menilai bimbingan ini.');
+            }
+
+            $penilaian = PenilaianBimbingan::where('bimbingan_id', $id_bimbingan)->where('dosen_id', $dosens)->firstOrFail();
+
+            $penilaian->update([
+                'motivasi' => $request->motivasi,
+                'kreativitas' => $request->kreativitas,
+                'disiplin' => $request->disiplin,
+                'metodologi' => $request->metodologi,
+                'perencanaan' => $request->perencanaan,
+                'rancangan' => $request->rancangan,
+                'kesesuaian_rancangan' => $request->kesesuaian_rancangan,
+                'keberfungsian' => $request->keberfungsian,
+            ]);
+
+            return redirect()->route('bimbingans.show', $id_bimbingan)->with('success', 'Penilaian berhasil diperbarui.');
+        }
+    }
+

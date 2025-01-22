@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Dosen;
+use App\Models\PenilaianBimbingan;
 use App\Models\ProposalSkripsi;
 use App\Models\Skripsi;
 use Illuminate\Http\Request;
@@ -168,5 +169,33 @@ class DosenController extends Controller
         })->paginate(25);
 
         return view('dosen.proposal.index', compact('proposal', 'keyword'));
+    }
+    public function daftarNilai()
+    {
+        $dosen = Auth::user()->dosen;
+        // / Mengambil user yang sedang login
+
+        // Debug ID dosen untuk memastikan
+        // dd(Auth::user(), $dosen);   
+        $penilaian = PenilaianBimbingan::where(function ($query) use ($dosen) {
+            $query->where('dosen_id', $dosen->id);
+        }) // Ambil 5 skripsi terbaru
+            ->get();
+
+
+        // Debug hasil query untuk memastikan ada data
+        // dd($skripsi);
+
+        return view('dosen.penilaian.index', compact('penilaian')); 
+    }
+    public function listDetail($id)
+    {
+        $dosen = Auth::user()->dosen;
+        // Mengambil data penilaian beserta relasi mahasiswa dan dosen
+        $penilaian = PenilaianBimbingan::findOrFail($id);
+        
+        
+        // Mengirim data ke view
+        return view('dosen.penilaian.detail', compact('penilaian'));
     }
 }

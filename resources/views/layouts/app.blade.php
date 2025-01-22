@@ -159,6 +159,13 @@
                                                 <span class="ml-3">Daftar Bimbingan Skripsi</span>
                                             </a>
                                         </li>
+                                    <li>
+                                        <a href="{{ route('admin.penilaian.index') }}"
+                                            class="block px-4 py-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 {{ request()->routeIs('admin.penilaian.index') ? 'bg-gray-300 dark:bg-gray-700 font-bold text-blue-600' : '' }}">
+                                            <i class="fas fa-clipboard-list w-5 h-5 text-gray-500 dark:text-gray-400"></i>
+                                            <span class="ml-3">Daftar Nilai</span>
+                                        </a>
+                                    </li>
                                     </ul>
                                 </li>
                             @endif
@@ -201,6 +208,13 @@
                                                 class="flex items-center px-4 py-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 {{ request()->routeIs('dosen.proposal.index') ? 'bg-gray-300 dark:bg-gray-700 font-bold text-blue-600' : '' }}">
                                                 <i class="fas fa-file-alt w-5 h-5 text-gray-500 dark:text-gray-400"></i>
                                                 <span class="ml-3">Daftar Proposal</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="{{ route('dosen.penilaian.index') }}"
+                                                class="block px-4 py-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 {{ request()->routeIs('dosen.penilaian.index') ? 'bg-gray-300 dark:bg-gray-700 font-bold text-blue-600' : '' }}">
+                                                <i class="fas fa-clipboard-list w-5 h-5 text-gray-500 dark:text-gray-400"></i>
+                                                <span class="ml-3">Daftar Nilai</span>
                                             </a>
                                         </li>
                                     </ul>
@@ -318,6 +332,13 @@
                                     <i
                                         class="fas fa-comments w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"></i>
                                     <span class="ms-3">Daftar Bimbingan</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('dosen.penilaian.index') }}"
+                                    class="block px-4 py-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 {{ request()->routeIs('dosen.penilaian.index') ? 'bg-gray-300 dark:bg-gray-700 font-bold text-blue-600' : '' }}">
+                                    <i class="fas fa-clipboard-list w-5 h-5 text-gray-500 dark:text-gray-400"></i>
+                                    <span class="ml-3">Daftar Nilai</span>
                                 </a>
                             </li>
                         @endrole

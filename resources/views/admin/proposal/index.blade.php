@@ -39,12 +39,11 @@
                             <td class="px-6 py-4 text-center">{{ $loop->iteration }}</td>
                             <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                 {{ $proposal->judul }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap">{{ $proposal->mahasiswaProposal->nim }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap">{{ $proposal->mahasiswaProposal->nama }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap">{{ $proposal->dosenPembimbing1Proposal->nip }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap">{{ $proposal->dosenPembimbing1Proposal->nama }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap"><a
-                                    href="{{ route('proposal.detail', $proposal->id_proposal) }}"
+                            <td class="px-6 py-4">{{ $proposal->mahasiswaProposal->nim }}</td>
+                            <td class="px-6 py-4">{{ $proposal->mahasiswaProposal->nama }}</td>
+                            <td class="px-6 py-4">{{ $proposal->dosenPembimbing1Proposal->nama }}</td>
+                            <td class="px-6 py-4">{{ $proposal->dosenPembimbing1Proposal->nip }}</td>
+                            <td class="px-6 py-4"><a href="{{ route('proposal.detail', $proposal->id_proposal) }}"
                                     class="inline-block py-2 px-4 bg-blue-500 text-white text-sm rounded-full hover:bg-blue-600">
                                     Detail
                                 </a>
