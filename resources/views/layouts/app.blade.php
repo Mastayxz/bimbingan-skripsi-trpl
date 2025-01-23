@@ -18,6 +18,7 @@
 
     <!-- Font Awesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
@@ -109,7 +110,7 @@
                                     <button id="adminDropdown"
                                         class="flex items-center w-full px-4 py-2 text-left text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
                                         <i class="fas fa-tachometer-alt w-5 h-5 text-gray-500 dark:text-gray-400"></i>
-                                        <span class="ml-3">Admin</span>
+                                        <span class="ml-3">Admin/Kaprodi</span>
                                         <i class="fas fa-chevron-down ml-auto"></i>
                                     </button>
                                     <ul id="adminMenu"
@@ -119,7 +120,7 @@
                                                 class="block px-4 py-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 {{ request()->routeIs('dashboard.admin') ? 'bg-gray-300 dark:bg-gray-700 font-bold text-blue-600' : '' }}">
                                                 <i
                                                     class="fas fa-tachometer-alt w-5 h-5 text-gray-500 dark:text-gray-400"></i>
-                                                <span class="ml-3">Dashboard Admin</span>
+                                                <span class="ml-3">Dashboard</span>
                                             </a>
                                         </li>
                                         <li>
@@ -159,16 +160,19 @@
                                                 <span class="ml-3">Daftar Bimbingan Skripsi</span>
                                             </a>
                                         </li>
-                                    <li>
-                                        <a href="{{ route('admin.penilaian.index') }}"
-                                            class="block px-4 py-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 {{ request()->routeIs('admin.penilaian.index') ? 'bg-gray-300 dark:bg-gray-700 font-bold text-blue-600' : '' }}">
-                                            <i class="fas fa-clipboard-list w-5 h-5 text-gray-500 dark:text-gray-400"></i>
-                                            <span class="ml-3">Daftar Nilai</span>
-                                        </a>
-                                    </li>
+                                        <li>
+                                            <a href="{{ route('admin.penilaian.index') }}"
+                                                class="block px-4 py-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 {{ request()->routeIs('admin.penilaian.index') ? 'bg-gray-300 dark:bg-gray-700 font-bold text-blue-600' : '' }}">
+                                                <i
+                                                    class="fas fa-clipboard-list w-5 h-5 text-gray-500 dark:text-gray-400"></i>
+                                                <span class="ml-3">Daftar Nilai</span>
+                                            </a>
+                                        </li>
                                     </ul>
                                 </li>
                             @endif
+
+                            <hr>
 
                             @if (auth()->user()->hasRole('dosen'))
                                 <!-- Dropdown Menu Dosen -->
@@ -213,7 +217,8 @@
                                         <li>
                                             <a href="{{ route('dosen.penilaian.index') }}"
                                                 class="block px-4 py-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 {{ request()->routeIs('dosen.penilaian.index') ? 'bg-gray-300 dark:bg-gray-700 font-bold text-blue-600' : '' }}">
-                                                <i class="fas fa-clipboard-list w-5 h-5 text-gray-500 dark:text-gray-400"></i>
+                                                <i
+                                                    class="fas fa-clipboard-list w-5 h-5 text-gray-500 dark:text-gray-400"></i>
                                                 <span class="ml-3">Daftar Nilai</span>
                                             </a>
                                         </li>
@@ -256,11 +261,18 @@
                                 </a>
                             </li>
                             <li>
+                                <a href="{{ route('admin.proposal.index') }}"
+                                    class="block px-4 py-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 {{ request()->routeIs('admin.proposal.index') ? 'bg-gray-300 dark:bg-gray-700 font-bold text-blue-600' : '' }}">
+                                    <i class="fas fa-file-alt w-5 h-5 text-gray-500 dark:text-gray-400"></i>
+                                    <span class="ml-3">Daftar Proposal</span>
+                                </a>
+                            </li>
+                            <li>
                                 <a href="{{ route('admin.bimbingan.index') }}"
                                     class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group {{ request()->routeIs('admin.bimbingan.index') ? 'bg-gray-300 dark:bg-gray-700 font-bold text-blue-600' : '' }}">
                                     <i
                                         class="fas fa-file-alt w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"></i>
-                                    <span class="ms-3">Daftar Bimbingan SKripi</span>
+                                    <span class="ms-3">Daftar Bimbingan Skripsi</span>
                                 </a>
                             </li>
                             <br>
@@ -357,20 +369,20 @@
             </div>
 
         </div>
-
-        <div class="flex-1 bg-gray-100 dark:bg-gray-900 p-6 lg:ml-64">
-            <div class="relative w-full px-4">
-                <div class="max-w-screen-xl mx-auto">
+        <div class="relative w-full h-full overflow-y-auto bg-gray-100 dark:bg-gray-900 lg:ml-72">
+            <main class="w-full px-4 lg:px-8 py-6">
+                <div class="max-w-screen-2xl mx-auto">
                     <!-- Konten di sini -->
                     @section('breadcrumb')
                     @show
                     {{ $slot ?? '' }}
                     @yield('content')
                 </div>
-            </div>
+            </main>
         </div>
 
     </div>
+
 
     <!-- Footer -->
     <footer

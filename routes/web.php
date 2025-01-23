@@ -84,6 +84,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/admin/nilai', [AdminController::class, 'listPenilaian'])->name('admin.penilaian.index');
     Route::get('/admin/detail/nilai', [AdminController::class, 'listDetailNilai'])->name('admin.penilaian.detail');
     Route::get('/admin/lock/nilai/{id}', [AdminController::class, 'lockNilai'])->name('admin.penilaian.lock');
+    Route::put('/admin/penilaian/lockSelected', [AdminController::class, 'lockSelected'])->name('admin.penilaian.lockSelected');
 
 
     // create bimbingan dari skripsi lulus ujian
@@ -93,6 +94,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 
     // Rute untuk manage mahasiswa
     Route::get('/admin/mahasiswa/edit/{id}', [AdminController::class, 'editMahasiswa'])->name('admin.mahasiswa.edit');
+    Route::put('/admin/mahasiswa/update/{id}', [AdminController::class, 'updateMahasiswa'])->name('admin.mahasiswa.update');
     Route::get('/admin/mahasiswa/delete/{id}', [AdminController::class, 'deleteMahasiswa'])->name('admin.mahasiswa.delete');
 
     // Rute untuk manage dosen
@@ -102,7 +104,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 
     Route::get('/admin/proposal/edit/{id}', [ProposalController::class, 'editDosen'])->name('admin.proposal.edit');
     Route::post('/admin/proposal/update/{id}', [ProposalController::class, 'editDosenPembimbing1'])->name('admin.proposal.update');
-
+    Route::delete('/admin/proposal/deleteSelected', [AdminController::class, 'deleteSelected'])->name('admin.proposal.deleteSelected');
     // Rute untuk manage Skripsi
     Route::get('/admin/skripsi/edit/{id}', [SkripsiController::class, 'edit'])->name('admin.skripsi.edit');
     Route::post('/admin/skripsi/update/{id}', [SkripsiController::class, 'editDosenPembimbing'])->name('admin.skripsi.update');

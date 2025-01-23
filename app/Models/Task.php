@@ -33,11 +33,11 @@ class Task extends Model
 
     public function dospem1()
     {
-        return $this->belongsTo(Dosen::class, 'dospem1_id', 'id_dosen');
+        return $this->belongsTo(Dosen::class, 'dosen_pembimbing_1_id');
     }
 
     public function dospem2()
     {
-        return $this->belongsTo(Dosen::class, 'dospem2_id', 'id_dosen');
+        return $this->belongsTo(Dosen::class, 'dosen_pembimbing_2_id');
     }
 }

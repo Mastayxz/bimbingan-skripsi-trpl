@@ -1,86 +1,92 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="container mx-auto px-4">
 
-        <h1 class="text-3xl font-bold text-gray-800 dark:text-gray-200 mb-6">Detail Tugas Mahasiswa</h1>
-
-        <div class="bg-white dark:bg-gray-800 shadow-md rounded-lg p-6 mb-6">
-            <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-2">Deskripsi Tugas</h2>
-            <p class="text-gray-600 dark:text-gray-400">{{ $task->deskripsi }}</p>
+    @if (session('success'))
+        <div class="flex items-center p-4 mb-4 text-sm text-green-800 border border-green-300 rounded-lg bg-green-50
+ dark:bg-gray-800 dark:text-green-400 dark:border-green-800"
+            role="alert">
+            {{ session('success') }}
         </div>
+    @endif
+    <h1 class="text-3xl font-bold text-gray-800 dark:text-gray-200 mb-6">Detail Tugas Mahasiswa</h1>
 
-        <div class="bg-white dark:bg-gray-800 shadow-md rounded-lg p-6 mb-6">
-            <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-2">File Tugas</h2>
-            <a href="{{ $task->link_dokumen }}" class="text-blue-500 dark:text-blue-400 hover:underline">Lihat File</a>
-        </div>
+    <div class="bg-white dark:bg-gray-800 shadow-md rounded-lg p-6 mb-6">
+        <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-2">Deskripsi Tugas</h2>
+        <p class="text-gray-600 dark:text-gray-400">{{ $task->deskripsi }}</p>
+    </div>
 
-        <div class="bg-white dark:bg-gray-800 shadow-md rounded-lg p-6 mb-6">
-            <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-2">Status Tugas</h2>
-            <p class="text-gray-600 dark:text-gray-400"><strong>Status:</strong> {{ ucfirst($task->status) }}</p>
-            <p class="text-gray-600 dark:text-gray-400 >
+    <div class="bg-white dark:bg-gray-800 shadow-md rounded-lg p-6 mb-6">
+        <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-2">File Tugas</h2>
+        <a href="{{ $task->link_dokumen }}" class="text-blue-500 dark:text-blue-400 hover:underline">Lihat File</a>
+    </div>
+
+    <div class="bg-white dark:bg-gray-800 shadow-md rounded-lg p-6 mb-6">
+        <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-2">Status Tugas</h2>
+        <p class="text-gray-600 dark:text-gray-400"><strong>Status:</strong> {{ ucfirst($task->status) }}</p>
+        <p class="text-gray-600 dark:text-gray-400 >
                 "><strong>Status Pembimbing 1:</strong><span
-                    class="font-bold rounded-lg text-lg @if ($task->status_dospem_1 == 'disetujui') bg-green-200 text-green-700 
+                class="font-bold rounded-lg text-lg @if ($task->status_dospem_1 == 'disetujui') bg-green-200 text-green-700 
                                 @elseif($task->status_dospem_1 == 'menunggu') bg-blue-200 text-blue-800 
                                 @else bg-yellow-200 text-yellow-800 @endif"">
 
-                    {{ $task->status_dospem_1 ?? 'Belum disetujui' }}
-                </span>
-            </p>
-            <p class="text-gray-600 dark:text-gray-400"><strong>Status Pembimbing 2:</strong><span
-                    class="font-bold rounded-lg text-lg @if ($task->status_dospem_2 == 'disetujui') bg-green-200 text-green-700 
+                {{ $task->status_dospem_1 ?? 'Belum disetujui' }}
+            </span>
+        </p>
+        <p class="text-gray-600 dark:text-gray-400"><strong>Status Pembimbing 2:</strong><span
+                class="font-bold rounded-lg text-lg @if ($task->status_dospem_2 == 'disetujui') bg-green-200 text-green-700 
                             @elseif($task->status_dospem_2 == 'menunggu') bg-blue-200 text-blue-800 
                             @else bg-yellow-200 text-yellow-800 @endif"">
 
-                    {{ $task->status_dospem_2 ?? 'Belum disetujui' }}
-                </span>
-            </p>
-        </div>
+                {{ $task->status_dospem_2 ?? 'Belum disetujui' }}
+            </span>
+        </p>
+    </div>
 
-        @role('dosen')
-            @if ($task->status == 'dikerjakan')
-                @if (
-                    ($task->status_dospem_1 != 'disetujui' && Auth::user()->dosen->id == $task->dosen_pembimbing_1_id) ||
-                        ($task->status_dospem_2 != 'disetujui' && Auth::user()->dosen->id == $task->dosen_pembimbing_2_id))
-                    <div class="bg-white dark:bg-gray-800 shadow-md rounded-lg p-6 mb-6">
-                        <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-4">Revisi atau ACC Tugas</h2>
-                        <form method="POST"
-                            action="{{ route('tasks.revisi', ['taskId' => $task->id_task, 'dosenId' => Auth::user()->dosen->id]) }}"
-                            enctype="multipart/form-data" class="space-y-4">
-                            @csrf
-                            @method('PUT')
+    @role('dosen')
+        @if ($task->status == 'dikerjakan')
+            @if (
+                ($task->status_dospem_1 != 'disetujui' && Auth::user()->dosen->id == $task->dosen_pembimbing_1_id) ||
+                    ($task->status_dospem_2 != 'disetujui' && Auth::user()->dosen->id == $task->dosen_pembimbing_2_id))
+                <div class="bg-white dark:bg-gray-800 shadow-md rounded-lg p-6 mb-6">
+                    <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-4">Revisi atau ACC Tugas</h2>
+                    <form method="POST"
+                        action="{{ route('tasks.revisi', ['taskId' => $task->id_task, 'dosenId' => Auth::user()->dosen->id]) }}"
+                        enctype="multipart/form-data" class="space-y-4">
+                        @csrf
+                        @method('PUT')
 
-                            <div>
-                                <label for="komentar" class="block text-gray-600 dark:text-gray-400">Komentar Revisi</label>
-                                <textarea name="komentar" id="komentar" rows="4"
-                                    class="w-full p-3 rounded border border-gray-300 dark:border-gray-700 dark:bg-gray-700 dark:text-gray-200" required></textarea>
-                            </div>
+                        <div>
+                            <label for="komentar" class="block text-gray-600 dark:text-gray-400">Komentar Revisi</label>
+                            <textarea name="komentar" id="komentar" rows="4"
+                                class="w-full p-3 rounded border border-gray-300 dark:border-gray-700 dark:bg-gray-700 dark:text-gray-200" required></textarea>
+                        </div>
 
-                            <div>
-                                <label for="link_dokumen" class="block text-gray-600 dark:text-gray-400">Link Dokumen
-                                    Revisi</label>
-                                <input type="url" name="link_dokumen" id="link_dokumen"
-                                    class="w-full p-3 rounded border border-gray-300 dark:border-gray-700 dark:bg-gray-700 dark:text-gray-200">
-                            </div>
+                        <div>
+                            <label for="link_dokumen" class="block text-gray-600 dark:text-gray-400">Link Dokumen
+                                Revisi</label>
+                            <input type="url" name="link_dokumen" id="link_dokumen"
+                                class="w-full p-3 rounded border border-gray-300 dark:border-gray-700 dark:bg-gray-700 dark:text-gray-200">
+                        </div>
 
-                            <button type="submit"
-                                class="bg-red-500 dark:bg-red-600 text-white py-2 px-4 rounded hover:bg-red-600 dark:hover:bg-red-700 focus:outline-none">
-                                Kirim Revisi
-                            </button>
-                        </form>
+                        <button type="submit"
+                            class="bg-red-500 dark:bg-red-600 text-white py-2 px-4 rounded hover:bg-red-600 dark:hover:bg-red-700 focus:outline-none">
+                            Kirim Revisi
+                        </button>
+                    </form>
 
-                        <form method="POST"
-                            action="{{ route('tasks.acc', ['taskId' => $task->id_task, 'dosenId' => Auth::user()->dosen->id]) }}"
-                            class="mt-4">
-                            @csrf
-                            @method('PUT')
-                            <button type="submit"
-                                class="bg-green-500 dark:bg-green-600 text-white py-2 px-4 rounded hover:bg-green-600 dark:hover:bg-green-700 focus:outline-none">
-                                ACC Tugas
-                            </button>
-                        </form>
-                @endif
-        </div>
+                    <form method="POST"
+                        action="{{ route('tasks.acc', ['taskId' => $task->id_task, 'dosenId' => Auth::user()->dosen->id]) }}"
+                        class="mt-4">
+                        @csrf
+                        @method('PUT')
+                        <button type="submit"
+                            class="bg-green-500 dark:bg-green-600 text-white py-2 px-4 rounded hover:bg-green-600 dark:hover:bg-green-700 focus:outline-none">
+                            ACC Tugas
+                        </button>
+                    </form>
+            @endif
+            </div>
         @endif
     @endrole
 

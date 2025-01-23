@@ -5,8 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class ProposalSkripsi extends Model
+class Proposal extends Model
 {
+    //
+
     use HasFactory;
     protected $table = 'proposal_skripsi';
 

@@ -47,4 +47,12 @@ class Dosen extends Model
     {
         return $this->hasMany(ProposalSkripsi::class, 'id_dosen_pembimbing_1');
     }
+    public function TasksDosen1()
+    {
+        return $this->hasMany(Task::class, 'dosen_pembimbing_1_id');
+    }
+    public function TasksDosen2()
+    {
+        return $this->hasMany(Task::class, 'dosen_pembimbing_2_id');
+    }
 }

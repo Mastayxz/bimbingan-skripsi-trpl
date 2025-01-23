@@ -31,19 +31,19 @@ class SkripsiController extends Controller
         $skripsi = Skripsi::findOrFail($id);
         // Validasi input
         $request->validate([
-            'dosen_pembimbing_1' => 'required|exists:dosens,id',
+            'judul_skripsi' => 'string:max:255',
             'dosen_pembimbing_2' => 'required|exists:dosens,id|different:dosen_pembimbing_1',
         ]);
 
         // Update dosen pembimbing skripsi
         $skripsi->update([
-            'dosen_pembimbing_1' => $request->dosen_pembimbing_1,
+            'judul_skripsi' => $request->judul_skripsi,
             'dosen_pembimbing_2' => $request->dosen_pembimbing_2,
         ]);
 
         return redirect()->route('admin.skripsi.index', $skripsi)->with('success', 'Dosen pembimbing berhasil diperbarui.');
     }
-    
+
 
 
     public function store(Request $request)

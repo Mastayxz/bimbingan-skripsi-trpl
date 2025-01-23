@@ -2,6 +2,15 @@
 
 @section('content')
     <h1 class="text-2xl font-bold mb-4 dark:text-gray-100">Daftar Bimbingan</h1>
+
+    <!-- Pesan sukses -->
+    @if (session('success'))
+        <div class="flex items-center p-4 mb-4 text-sm text-green-800 border border-green-300 rounded-lg bg-green-50
+         dark:bg-gray-800 dark:text-green-400 dark:border-green-800"
+            role="alert">
+            {{ session('success') }}
+        </div>
+    @endif
     <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
         <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
             <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
@@ -47,6 +56,10 @@
                 @endforeach
             </tbody>
         </table>
-        {{ $bimbingan->links() }}
+        <div class="mt-6">
+            {{ $bimbingan->links('pagination::tailwind') }}
+        </div>
+
+
     </div>
 @endsection

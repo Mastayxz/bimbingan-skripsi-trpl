@@ -5,14 +5,15 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Models\Dosen;
 use App\Models\Skripsi;
+use App\Models\Proposal;
 use App\Models\Bimbingan;
 use App\Models\Mahasiswa;
-use App\Models\PenilaianBimbingan;
 use Illuminate\Http\Request;
 use App\Models\ProposalSkripsi;
+use App\Models\PenilaianBimbingan;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Redis;
 use Spatie\Permission\Models\Role;
+use Illuminate\Support\Facades\Redis;
 
 class AdminController extends Controller
 {
@@ -114,24 +115,26 @@ class AdminController extends Controller
     public function listSkripsi()
     {
         // Mengambil data skripsi beserta relasi mahasiswa dan dosen pembimbing 1 dan 2
-        $skripsi = Skripsi::with(['mahasiswaSkripsi', 'dosenPembimbing1', 'dosenPembimbing2'])->get();
+        $skripsi = Skripsi::with(['mahasiswaSkripsi', 'dosenPembimbing1', 'dosenPembimbing2'])->latest('created_at')->paginate(10);
 
         // Mengirim data ke view
         return view('admin.skripsi.index', compact('skripsi'));
     }
 
+
     public function listProposal()
     {
-        // Mengambil data skripsi beserta relasi mahasiswa dan dosen pembimbing 1 dan 2
-        $proposal = ProposalSkripsi::with(['mahasiswaProposal', 'dosenPembimbing1Proposal'])->get();
+        // Mengambil data proposal dengan pagination
+        $proposal = ProposalSkripsi::with(['mahasiswaProposal', 'dosenPembimbing1Proposal'])->latest('created_at')->paginate(10);
 
-        // Mengirim data ke view
         return view('admin.proposal.index', compact('proposal'));
     }
+
+
     public function listBimbingan()
     {
         // Mengambil data bimbingan beserta relasi skripsi, mahasiswa, dan dosen pembimbing 1 dan 2
-        $bimbingan = Bimbingan::with(['skripsi', 'mahasiswaBimbingan', 'dosenPembimbing1', 'dosenPembimbing2'])->paginate(10);
+        $bimbingan = Bimbingan::with(['skripsi', 'mahasiswaBimbingan', 'dosenPembimbing1', 'dosenPembimbing2'])->latest('created_at')->paginate(10);
 
         // Mengirim data ke view
         return view('admin.bimbingan.index', compact('bimbingan'));
@@ -140,8 +143,8 @@ class AdminController extends Controller
     {
         // Mengambil data penilaian beserta relasi mahasiswa dan dosen
         $penilaian = PenilaianBimbingan::with(['bimbingan', 'dosen', 'bimbingan.skripsi'])->get();
-        
-        
+
+
         // Mengirim data ke view
         return view('admin.penilaian.index', compact('penilaian'));
     }
@@ -149,8 +152,8 @@ class AdminController extends Controller
     {
         // Mengambil data penilaian beserta relasi mahasiswa dan dosen
         $penilaian = PenilaianBimbingan::with(['bimbingan', 'dosen', 'bimbingan.skripsi'])->get();
-        
-        
+
+
         // Mengirim data ke view
         return view('admin.penilaian.detail', compact('penilaian'));
     }
@@ -162,9 +165,31 @@ class AdminController extends Controller
 
         return redirect()->route('admin.penilaian.detail')->with('success', 'Nilai berhasil dikunci.');
     }
+    public function lockSelected(Request $request)
+    {
+        $selectedIds = $request->input('selected_ids');
 
+        if ($selectedIds) {
+            // Perbarui status ke 'Terkunci' untuk data yang dipilih
+            PenilaianBimbingan::whereIn('id', $selectedIds)->update(['status' => 'Terkunci']);
 
+            return redirect()->route('admin.penilaian.index')->with('success', 'Nilai berhasil dikunci.');
+        }
 
+        return redirect()->back()->with('error', 'Tidak ada data yang dipilih.');
+    }
+
+    public function deleteSelected(Request $request)
+    {
+        $selectedIds = $request->input('selected_ids');
+
+        if ($selectedIds) {
+            ProposalSkripsi::whereIn('id_proposal', $selectedIds)->delete();
+            return redirect()->back()->with('success', 'Data berhasil dihapus.');
+        }
+
+        return redirect()->back()->with('error', 'Tidak ada data yang dipilih.');
+    }
 
     public function approveSkripsi($id_skripsi)
     {
@@ -218,6 +243,32 @@ class AdminController extends Controller
         $mahasiswa->delete();
 
         return redirect()->route('admin.mahasiswa')->with('success', 'Mahasiswa berhasil dihapus.');
+    }
+
+    public function updateMahasiswa(Request $request, $id)
+    {
+        $mahasiswa = Mahasiswa::findOrFail($id);
+
+        // Validasi data yang diterima dari request
+        $request->validate([
+            'nama' => 'required|string|max:255',
+            'tahun_masuk' => 'required|string|max:255',
+            'telepon' => 'required|string|max:255',
+            'email' => 'required|string|max:255',
+            'jurusan' => 'required|string|max:255',
+            'prodi' => 'required|string|max:255',
+        ]);
+
+        // Update data mahasiswa$mahasiswa
+        $mahasiswa->nama = $request->input('nama');
+        $mahasiswa->jurusan = $request->input('jurusan');
+        $mahasiswa->tahun_masuk = $request->input('tahun_masuk');
+        $mahasiswa->telepon = $request->input('telepon');
+        $mahasiswa->email = $request->input('email');
+        $mahasiswa->prodi = $request->input('prodi');
+        $mahasiswa->save();
+
+        return redirect()->route('admin.mahasiswa')->with('success', 'Data mahasiswa berhasil diperbarui.');
     }
 
 
@@ -281,7 +332,4 @@ class AdminController extends Controller
         // Mengembalikan response atau redirect
         return redirect()->route('admin.dosen')->with('success', 'Dosen berhasil dijadikan admin.');
     }
-
-     
 }
-

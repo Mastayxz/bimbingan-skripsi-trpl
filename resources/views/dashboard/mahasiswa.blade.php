@@ -15,8 +15,8 @@
 
             <ul>
                 @foreach ($proposals as $proposal)
-                    <li class="mb-6 p-4 bg-gray-700 rounded-lg shadow">
-                        <h3 class="text-xl font-semibold text-white">Judul Proposal: {{ $proposal->judul }}</h3>
+                    <li class="mb-6 p-4 bg-white dark:bg-gray-700 rounded-lg shadow text-black dark:text-white">
+                        <h3 class="text-xl font-semibold dark:text-white">Judul Proposal: {{ $proposal->judul }}</h3>
                         <p class="mt-2">Status:
                             <span
                                 class="font-medium {{ $proposal->status === 'disetujui' ? 'text-green-400' : 'text-yellow-400' }}">
@@ -26,13 +26,13 @@
                         <div class="mt-4">
                             <label for="comments" class="block text-sm font-medium">Komentar dari Dosen Pembimbing</label>
                             <div class="mb-6">
-                                <p class="text-gray-300">{{ $proposal->komentar }}</p>
+                                <p class="dark:text-gray-300">{{ $proposal->komentar }}</p>
                             </div>
                         </div>
                         <div class="mt-4">
                             <label for="dospem" class="block text-sm font-medium">Dosen Pembimbing</label>
                             <div class="mb-6">
-                                <p class="text-gray-300">{{ $proposal->dosenPembimbing1Proposal->nama }}</p>
+                                <p class="dark:text-gray-300">{{ $proposal->dosenPembimbing1Proposal->nama }}</p>
                             </div>
                         </div>
                     </li>

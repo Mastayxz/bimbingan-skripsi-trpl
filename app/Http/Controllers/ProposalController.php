@@ -37,8 +37,9 @@ class ProposalController extends Controller
         $proposal->update([
             'id_dosen_pembimbing_1' => $request->dosen_pembimbing_1,
         ]);
-
-        $proposal->status = 'diajukan';
+        if ($proposal->status === 'ditolak') {
+            $proposal->status = 'disetujui';
+        }
         $proposal->save();
 
         return redirect()->route('admin.proposal.index', $proposal)->with('success', 'Dosen pembimbing 1 berhasil diperbarui.');
@@ -48,15 +49,21 @@ class ProposalController extends Controller
     {
         // Periksa apakah mahasiswa sudah memiliki proposal yang disetujui
         $mahasiswa = Auth::user()->mahasiswa;
+
+        // Cek tahun masuk
         if ($mahasiswa->tahun_masuk >= 2023) {
-            return redirect()->route('proposal.create')->with('error', 'Anda belum dapat mendaftarkan proposal');
+            return redirect()->route('proposal.create')
+                ->with('error', 'Anda belum dapat mendaftarkan proposal.');
         }
+
+        // Cek jika sudah ada proposal dengan status tertentu
         $existingProposal = ProposalSkripsi::where('id_mahasiswa', $mahasiswa->id)
-            ->where('status', ['diajukan', 'disetujui', 'ikut ujian']) // Cek hanya proposal yang disetujui
-            ->first();
+            ->whereIn('status', ['diajukan', 'disetujui', 'ikut ujian'])
+            ->exists();
 
         if ($existingProposal) {
-            return redirect()->route('proposal.create')->with('error', 'Anda sudah memiliki proposal yang disetujui dan tidak dapat mendaftar lagi.');
+            return redirect()->route('proposal.create')
+                ->with('error', 'Anda sudah memiliki proposal yang terdaftar. Anda tidak dapat mendaftar proposal baru.');
         }
         // dd($existingProposal);
 

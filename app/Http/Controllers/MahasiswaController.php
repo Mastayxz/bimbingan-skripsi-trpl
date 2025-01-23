@@ -67,7 +67,7 @@ class MahasiswaController extends Controller
             ->where(function ($query) use ($user) {
                 $query->where('id_mahasiswa', $user->id);
             }) // Ambil 5 skripsi terbaru
-            ->get();
+            ->paginate(10);
 
         // Kirim data skripsi dan progress ke view
         return view('mahasiswa.proposal.index', compact('proposals'));

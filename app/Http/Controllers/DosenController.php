@@ -15,14 +15,14 @@ class DosenController extends Controller
     {
         $proposal = ProposalSkripsi::findOrFail($id_proposal);
 
-        // Validasi input komentar
-        $request->validate([
-            'komentar' => 'required|string|max:1000', // Komentar wajib diisi dengan maksimal 1000 karakter
-        ]);
+        // // Validasi input komentar
+        // $request->validate([
+        //     'komentar' => 'required|string|max:1000', // Komentar wajib diisi dengan maksimal 1000 karakter
+        // ]);
 
         // Perbarui status dan komentar
         $proposal->status = 'disetujui';
-        $proposal->komentar = $request->input('komentar');
+        // $proposal->komentar = $request->input('komentar');
         $proposal->save();
 
         return redirect()->route('dosen.proposal.index')->with('success', 'Proposal berhasil disetujui.');
@@ -33,13 +33,13 @@ class DosenController extends Controller
         $proposal = ProposalSkripsi::findOrFail($id_proposal);
 
         // Validasi input komentar
-        $request->validate([
-            'komentar' => 'required|string|max:1000', // Komentar wajib diisi dengan maksimal 1000 karakter
-        ]);
+        // $request->validate([
+        //     'komentar' => 'required|string|max:1000', // Komentar wajib diisi dengan maksimal 1000 karakter
+        // ]);
 
         // Perbarui status dan komentar
         $proposal->status = 'ditolak';
-        $proposal->komentar = $request->input('komentar');
+        // $proposal->komentar = $request->input('komentar');
         $proposal->save();
 
         return redirect()->route('dosen.proposal.index')->with('success', 'Proposal berhasil ditolak.');
@@ -111,7 +111,7 @@ class DosenController extends Controller
             $query->where('dosen_pembimbing_1', $dosen->id)
                 ->orWhere('dosen_pembimbing_2', $dosen->id);
         }) // Ambil 5 skripsi terbaru
-            ->get();
+            ->latest('created_at')->paginate(10);
 
 
         // Debug hasil query untuk memastikan ada data
@@ -132,7 +132,7 @@ class DosenController extends Controller
         $proposals = ProposalSkripsi::where(function ($query) use ($dosen) {
             $query->where('id_dosen_pembimbing_1', $dosen->id);
         }) // Ambil 5 skripsi terbaru
-            ->get();
+            ->latest('created_at')->paginate(10);
 
 
         // Debug hasil query untuk memastikan ada data
@@ -186,15 +186,15 @@ class DosenController extends Controller
         // Debug hasil query untuk memastikan ada data
         // dd($skripsi);
 
-        return view('dosen.penilaian.index', compact('penilaian')); 
+        return view('dosen.penilaian.index', compact('penilaian'));
     }
     public function listDetail($id)
     {
         $dosen = Auth::user()->dosen;
         // Mengambil data penilaian beserta relasi mahasiswa dan dosen
         $penilaian = PenilaianBimbingan::findOrFail($id);
-        
-        
+
+
         // Mengirim data ke view
         return view('dosen.penilaian.detail', compact('penilaian'));
     }

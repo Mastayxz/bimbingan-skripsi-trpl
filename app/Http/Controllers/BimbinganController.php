@@ -20,12 +20,10 @@ class BimbinganController extends Controller
             $bimbingans = Bimbingan::where('mahasiswa_id', $user->mahasiswa->id)
                 ->with(['skripsi', 'dosenPembimbing1', 'dosenPembimbing2'])
                 ->paginate(6);
-                ->paginate(6);
         } elseif ($user->dosen) { // Jika user adalah dosen
             $bimbingans = Bimbingan::with(['skripsi', 'mahasiswaBimbingan'])
                 ->where('dosen_pembimbing_1', $user->dosen->id)
                 ->orWhere('dosen_pembimbing_2', $user->dosen->id)
-                ->paginate(6);
                 ->paginate(6);
         } else {
             abort(403, 'Unauthorized access.');
@@ -43,11 +41,11 @@ class BimbinganController extends Controller
         $user = Auth::user();
         $tasks = Task::where('bimbingan_id', $bimbingan_id)->get();
         $penilaian = PenilaianBimbingan::where('bimbingan_id', $bimbingan_id)
-        ->where('dosen_id', optional($user->dosen)->id)
-        ->first();
+            ->where('dosen_id', optional($user->dosen)->id)
+            ->first();
         // Query bimbingan dengan relasi yang diperlukan
         $bimbingan = Bimbingan::with(['tasks', 'skripsi', 'mahasiswaBimbingan', 'dosenPembimbing1', 'dosenPembimbing2', 'penilaian'])
-        ->findOrFail($bimbingan_id);
+            ->findOrFail($bimbingan_id);
 
         // Validasi akses untuk mahasiswa
         if ($user->mahasiswa && $bimbingan->mahasiswa_id === $user->mahasiswa->id) {
@@ -60,14 +58,26 @@ class BimbinganController extends Controller
             // Jika bukan mahasiswa atau dosen terkait, tolak akses
             abort(403, 'Unauthorized access.');
         }
-        
 
-        // Hitung progress berdasarkan task yang selesai
+        $tasksInProgress = $bimbingan->tasks->where('status', 'dikerjakan')->count();
+
+        // Hitung jumlah tugas yang selesai
         $completedTasks = $tasks->where('status', 'selesai')->count();
-        $totalTasks = $tasks->count();
-        $progress = $totalTasks > 0 ? ($completedTasks / $totalTasks) * 100 : 0;
 
-        return view('bimbingan.show', compact('bimbingan', 'tasks', 'progress', 'penilaian'));
+        // Hitung total tugas
+        $totalTasks = $tasks->count();
+
+        // Tentukan progress
+        if ($completedTasks >= 10) {
+            // Jika minimal 10 tugas selesai, progress 100%
+            $progress = 100;
+        } else {
+            // Jika kurang dari 10 tugas selesai, hitung progres secara proporsional
+            $progress = $totalTasks > 0 ? ($completedTasks / $totalTasks) * 100 : 0;
+        }
+
+
+        return view('bimbingan.show', compact('bimbingan', 'tasks', 'progress', 'penilaian', 'tasksInProgress'));
     }
 
     public function indexForDosen()
@@ -107,6 +117,13 @@ class BimbinganController extends Controller
         // Cek jika kedua pembimbing sudah selesai, ubah status bimbingan menjadi selesai
         if ($bimbingan->status_pembimbing_1 === 'selesai' && $bimbingan->status_pembimbing_2 === 'selesai') {
             $bimbingan->status_bimbingan = 'selesai';
+
+            // Ubah status skripsi menjadi selesai
+            $skripsi = $bimbingan->skripsi; // Relasi ke skripsi
+            if ($skripsi) {
+                $skripsi->status = 'selesai';
+                $skripsi->save();
+            }
         }
 
         $bimbingan->save();
@@ -126,23 +143,6 @@ class BimbinganController extends Controller
             })
             ->paginate(6);
 
-        redirect()->route('bimbingans.index', compact('bimbingans'));
-    }
-}
-
-    public function searchBimbingan(Request $request)
-    {
-        $keyword = $request->input('keyword');
-
-        // Mencari bimbingan berdasarkan keyword di NIM mahasiswa
-        $bimbingans = Bimbingan::query()
-            ->when($keyword, function ($query) use ($keyword) {
-                $query->whereHas('mahasiswaBimbingan', function ($subQuery) use ($keyword) {
-                    $subQuery->where('nim', 'like', "%{$keyword}%");
-                });
-            })
-            ->paginate(6);
-
-        redirect()->route('bimbingans.index', compact('bimbingans'));
+        return view('bimbingan.index', compact('bimbingans'));
     }
 }
