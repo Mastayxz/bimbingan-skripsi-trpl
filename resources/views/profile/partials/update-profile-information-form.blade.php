@@ -64,10 +64,10 @@
 
         <!-- Phone (Editable) -->
         <div>
-            <x-input-label for="phone" :value="__('Phone')" />
-            <x-text-input id="phone" name="phone" type="text"
-                class="mt-1 block w-full dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100" :value="old('phone', $user->mahasiswa->phone ?? 'Belum diisi')" />
-            <x-input-error class="mt-2" :messages="$errors->get('phone')" />
+            <x-input-label for="telepon" :value="__('telepon')" />
+            <x-text-input id="telepon" name="telepon" type="text"
+                class="mt-1 block w-full dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100" :value="old('telepon', $user->mahasiswa->telepon ?? 'Belum diisi')" />
+            <x-input-error class="mt-2" :messages="$errors->get('telepon')" />
         </div>
 
         <!-- Jurusan (Read-only) -->

@@ -237,6 +237,14 @@
                                 </a>
                             </li>
                             <li>
+                                <a href="{{ route('admin.periode.index') }}"
+                                    class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group {{ request()->routeIs('admin.periode.index') ? 'bg-gray-300 dark:bg-gray-700 font-bold text-blue-600' : '' }}">
+                                    <i
+                                        class="fas fa-user-graduate w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"></i>
+                                    <span class="ms-3">Periode</span>
+                                </a>
+                            </li>
+                            <li>
                                 <a href="{{ route('admin.mahasiswa') }}"
                                     class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group {{ request()->routeIs('admin.mahasiswa') ? 'bg-gray-300 dark:bg-gray-700 font-bold text-blue-600' : '' }}">
                                     <i
@@ -375,6 +383,11 @@
                     <!-- Konten di sini -->
                     @section('breadcrumb')
                     @show
+                    @if (session('error'))
+                        <div class="bg-red-500 dark:bg-red-700 text-white p-4 rounded-lg mb-6">
+                            {{ session('error') }}
+                        </div>
+                    @endif
                     {{ $slot ?? '' }}
                     @yield('content')
                 </div>

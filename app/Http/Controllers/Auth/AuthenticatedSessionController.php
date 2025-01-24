@@ -110,7 +110,7 @@ class AuthenticatedSessionController extends Controller
         Cache::put($cacheKey, $attempts, $lockoutTime);
 
         throw ValidationException::withMessages([
-            'identifier' => __('The provided credentials are incorrect.'),
+            'identifier' => __('Terjadi Kesalahan Saat Login.'),
         ]);
     }
 

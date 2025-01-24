@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\DosenController;
+use App\Http\Controllers\PeriodeController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SkripsiController;
 use App\Http\Controllers\ProposalController;
@@ -20,7 +21,7 @@ Route::get('/', function () {
 
 // Dashboard (default)
 Route::get('/dashboard', function () {
-    // return view('dashboard.dashboard');
+    return view('welcome');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 // Rute Profile (Semua user yang login bisa mengakses)
@@ -116,6 +117,17 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('dosen/search', [AdminController::class, 'searchDosen'])->name('dosen.search');
     Route::get('skripsi/search', [AdminController::class, 'searchSkripsi'])->name('skripsi.search');
     Route::get('proposal/search', [AdminController::class, 'searchProposal'])->name('proposal.search');
+
+    Route::get('/periode', [PeriodeController::class, 'index'])->name('admin.periode.index');
+
+    // Menyimpan periode baru
+    Route::post('/periode', [PeriodeController::class, 'store'])->name('admin.periode.store');
+
+    // Mengubah status periode (dibuka atau ditutup)
+    Route::post('/periode/{id}/status', [PeriodeController::class, 'updateStatusPeriode'])->name('admin.periode.status');
+
+    // Menampilkan form pembuatan periode baru
+    Route::get('/periode/create', [PeriodeController::class, 'create'])->name('admin.periode.create');
 });
 
 

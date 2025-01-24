@@ -44,7 +44,7 @@ class ProfileController extends Controller
             if ($mahasiswa) {
                 $mahasiswa->nama = $request->name;
                 $mahasiswa->email = $request->email;
-                // $mahasiswa->telepon = $request->telepon;
+                $mahasiswa->telepon = $request->telepon;
                 $mahasiswa->save();
             }
         }

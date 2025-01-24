@@ -155,7 +155,7 @@
                 @csrf
                 @method('PUT')
                 <div class="p-4">
-                    <h2 class="text-xl font-bold mb-4">Setujui Proposal</h2>
+                    <h2 class="text-xl font-bold mb-4">Revisi Proposal</h2>
                     <textarea name="komentar" class="w-full border-gray-300 rounded p-2" rows="3" placeholder="Masukkan komentar..."
                         required></textarea>
                     <div class="flex justify-end mt-4">

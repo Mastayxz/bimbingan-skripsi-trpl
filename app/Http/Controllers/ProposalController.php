@@ -7,14 +7,41 @@ use App\Models\Skripsi;
 use App\Models\Mahasiswa;
 use Illuminate\Http\Request;
 use App\Models\ProposalSkripsi;
+use App\Models\PeriodePendaftaran;
 use Illuminate\Support\Facades\Auth;
 
 class ProposalController extends Controller
 {
     public function create()
     {
-        $dosens = Dosen::all();
+        $periode = PeriodePendaftaran::where('status', PeriodePendaftaran::STATUS_DIBUKA)->first();
 
+        // Jika tidak ada periode yang dibuka
+        if (!$periode) {
+            return redirect()->route('dashboard.mahasiswa')->with('error', 'Pendaftaran sedang ditutup.');
+        }
+
+        // Validasi tanggal
+        $today = now()->toDateString();
+        if ($today < $periode->tanggal_mulai || $today > $periode->tanggal_akhir) {
+            return redirect()->route('dashboard.mahasiswa')->with('error', 'Pendaftaran tidak tersedia pada periode ini.');
+        }
+
+        // Ambil data mahasiswa yang sedang login
+        $mahasiswa = Mahasiswa::findOrFail(Auth::user()->mahasiswa->id);
+
+        // Validasi berdasarkan tahun masuk
+        if ($periode->tahun_masuk_min && $mahasiswa->tahun_masuk < $periode->tahun_masuk_min) {
+            return redirect()->route('dashboard.mahasiswa')->with('error', 'Tahun masuk Anda tidak memenuhi syarat untuk periode ini.');
+        }
+
+        if ($periode->tahun_masuk_max && $mahasiswa->tahun_masuk > $periode->tahun_masuk_max) {
+            return redirect()->route('dashboard.mahasiswa')->with('error', 'Tahun masuk Anda tidak memenuhi syarat untuk periode ini.');
+        }
+
+
+        // Ambil data dosen untuk form pendaftaran
+        $dosens = Dosen::all();
         return view('mahasiswa.proposal.create', compact('dosens'));
     }
 
@@ -184,6 +211,7 @@ class ProposalController extends Controller
 
     public function edit($id)
     {
+
         $proposal = ProposalSkripsi::findOrFail($id);
         $mahasiswa = Auth::user()->mahasiswa->id;
         if ($mahasiswa !== $proposal->id_mahasiswa) {
